@@ -216,6 +216,7 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
           <option value="full">Full Quran (Surah 1–114)</option>
         </select></label>
         <label class="basmala-setting"><input type="checkbox" id="audioBasmala" checked> Recite Bismillah before each surah (except 1 and 9)</label>
+        <label><input type="checkbox" id="keepAwake"> Keep screen on while playing</label>
       </div>
       <p class="note">Use the player at the bottom of the screen. Lock-screen track changes depend on your device.</p>
       <div class="offline-panel" aria-label="Offline Quran download manager">
@@ -350,6 +351,8 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
     <span id="dockTime">0:00 / 0:00</span>
   </div>
   <div class="dock-options">
+    <label class="dock-speed-label" for="sleepTimer">Sleep</label>
+    <select id="sleepTimer" aria-label="Sleep timer"><option value="0">Off</option><option value="15">15 min</option><option value="30">30 min</option><option value="60">60 min</option><option value="end">End of surah</option></select>
     <label class="dock-speed-label" for="audioSpeed">Speed</label>
     <select id="audioSpeed" aria-label="Audio playback speed"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select>
     <button id="dockSettings" type="button" title="Audio settings and offline downloads" aria-label="Open audio settings">⚙ <span>Settings</span></button>
@@ -1027,6 +1030,67 @@ setReaderMode('mushaf');
 initSurahs();
 updateDockTimeline();
 updateOfflineStatus();
+
+/* ---------- Sleep timer, keep screen on, resume after sleep ---------- */
+let sleepMode = '0', sleepTimeout = null, intentionalPause = false, wakeLock = null;
+
+function sleepEnded(message) {
+  clearTimeout(sleepTimeout); sleepTimeout = null;
+  sleepMode = '0'; $('sleepTimer').value = '0';
+  stopPlay();
+  updateAudioStatus(message);
+}
+$('sleepTimer').onchange = () => {
+  clearTimeout(sleepTimeout); sleepTimeout = null;
+  sleepMode = $('sleepTimer').value;
+  if (sleepMode !== '0' && sleepMode !== 'end') {
+    sleepTimeout = setTimeout(() => sleepEnded('Sleep timer ended. Playback stopped.'), +sleepMode * 60000);
+    updateAudioStatus('Playback will stop in ' + sleepMode + ' minutes.');
+  } else if (sleepMode === 'end') {
+    updateAudioStatus('Playback will stop at the end of this surah.');
+  }
+};
+// Stop at the last verse of the current surah when "End of surah" is chosen.
+const endedBefore = au.onended;
+au.onended = () => {
+  if (sleepMode === 'end' && pl.on && !pl.intro && pl.left <= 1 && pl.i >= cur.length - 1) {
+    sleepEnded('Stopped at the end of this surah.');
+    return;
+  }
+  endedBefore();
+};
+
+async function holdScreenAwake() {
+  if (!S.keepAwake || wakeLock || !('wakeLock' in navigator)) return;
+  try {
+    wakeLock = await navigator.wakeLock.request('screen');
+    wakeLock.addEventListener('release', () => { wakeLock = null; });
+  } catch (e) { /* not available or denied: playback continues normally */ }
+}
+function releaseScreenAwake() {
+  if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+}
+$('keepAwake').checked = !!S.keepAwake;
+$('keepAwake').onchange = () => {
+  S.keepAwake = $('keepAwake').checked; save();
+  if (S.keepAwake && au && !au.paused) holdScreenAwake(); else releaseScreenAwake();
+};
+
+au.addEventListener('play', () => { intentionalPause = false; holdScreenAwake(); });
+au.addEventListener('pause', () => {
+  // A pause while the screen is off is usually the phone, not the listener.
+  if (!document.hidden) intentionalPause = true;
+  releaseScreenAwake();
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+  if (S.keepAwake && pl.on && !au.paused) holdScreenAwake();
+  // Resume if the phone interrupted playback and the listener did not pause it.
+  if (pl.on && au.paused && !intentionalPause) {
+    au.play().catch(() => updateAudioStatus('Tap Play to resume.'));
+  }
+});
 </script>
 <script src="quranpath.js"></script>
 </body>

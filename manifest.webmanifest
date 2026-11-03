@@ -1,25 +1,20 @@
 {
-  "name": "QuranPath — Quran & Tajweed Learner",
-  "short_name": "QuranPath",
-  "description": "Learn Quran recitation, Tajweed, and memorisation, with an installable Quran audio player and offline surah downloads.",
+  "id": "./",
+  "name": "Quran & Arabic Learner",
+  "short_name": "Quran Learner",
+  "description": "Learn the Arabic alphabet and memorize the Qur'an with audio, transliteration and progress tracking.",
+  "lang": "en",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#f8f7f3",
-  "theme_color": "#063b32",
+  "background_color": "#faf8f3",
+  "theme_color": "#0f6b4f",
+  "categories": ["education", "books", "lifestyle"],
   "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }

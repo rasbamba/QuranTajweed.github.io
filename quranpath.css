@@ -140,3 +140,24 @@ main#app-main{padding-bottom:90px}
 @media(max-width:890px){.quran-dock{left:0;right:0;gap:9px}}
 @media(max-width:630px){:root{--dock-height:129px}.quran-dock{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;gap:8px 10px;padding:9px 12px calc(10px + env(safe-area-inset-bottom,0px))}.dock-info{grid-column:1;grid-row:1}.dock-controls{grid-column:2;grid-row:1}.dock-art{width:34px;height:34px;flex-basis:34px;border-radius:8px;font-size:25px}.dock-controls button{min-width:34px;width:34px;height:35px;font-size:17px}.dock-controls .dock-main-btn{min-width:38px;width:38px;height:38px;font-size:18px}.dock-timeline{grid-column:1;grid-row:2}.dock-options{grid-column:2;grid-row:2}.dock-speed-label{display:none}.dock-options select{font-size:11px;padding:6px 2px}.dock-options #dockSettings{font-size:14px;padding:6px 8px}.dock-options #dockSettings span{display:none}.dock-track strong{font-size:12px}.dock-status{font-size:10px}}
 @media(max-width:360px){.dock-art{display:none}.dock-controls{gap:0}.dock-controls button{width:30px;min-width:30px}.dock-controls .dock-main-btn{width:36px;min-width:36px}.dock-options{gap:2px}.quran-dock{padding-left:8px;padding-right:8px}}
+
+/* ===== Dark theme (follows the device setting) ===== */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--bg:#101a16;--card:#17241f;--tx:#e6f0ea;--mu:#9bb3a6;--ac:#4cc79d;--ac2:#1d3129;--ok:#5ad08f;--bad:#ff8a80;--bd:#2c3e36;--gold:#d9b46f}
+  body{background:var(--bg);color:var(--tx)}
+  a{color:#7fdcbc}
+  .topbar,.topbar-link,.quran-dock,.focus-card,.insight-card,.lesson-card,.practice-main-card,.focus-practice,.insight-card textarea,.focus-number{background:var(--card)}
+  .focus-practice,.focus-card,.insight-card,.lesson-card,.practice-main-card{border-color:#2c3e36}
+  .focus-selectors,.focus-reciter,.reflect-panel,.practice-result,.practice-main-card .note,#t-quran>.warn,.practice-tags span+span,.dock-options select,.dock-options #dockSettings,.focus-actions .review-btn{background:#1b2b25}
+  .dock-controls button:hover{background:var(--ac2)}
+  .card-icon,.practice-tags span,.lesson-tag{background:var(--ac2);color:#8fe0c0}
+  .gold-icon{background:#3a2f1a;color:#e0bd80}
+  .focus-number{border-color:#4a3f28;color:var(--gold)}
+  .focus-arabic,.practice-arabic,.section-heading h2,.page-intro h1,.focus-heading h3,.focus-translation p:last-child,.tajweed-rules strong,.reflect-panel strong,.advanced-panel summary,.focus-selectors select,.focus-actions button,.dock-controls button,.dock-options select,.dock-options #dockSettings,.insight-card textarea{color:var(--tx)}
+  .focus-reference,.focus-selectors label,.focus-toggles label,.focus-translit p:last-child,.focus-source,.audio-state,.dock-status,#dockTime,.dock-speed-label,.section-subtitle,.page-intro>p:last-child,.lesson-card p,.insight-card>p:not(.eyebrow),.tajweed-rules div,.tajweed-rules p,.reflect-panel p,.practice-result,.practice-steps span,.education-next p:not(.eyebrow),.reader-disclaimer,.insight-card small,.online-indicator,.topbar-intro,.focus-practice{color:var(--mu)}
+  .eyebrow{color:#e2c184}
+  .focus-selectors label+label{border-left-color:#2c4a3f}
+  .tajweed-rules div{border-top-color:#2c3e36}
+  .practice-arabic{border-bottom-color:#2c3e36}
+  .basmala-intro,.basmala-study,.basmala-practice,.player .basmala-setting input{color:#9fe3c9}
+}
