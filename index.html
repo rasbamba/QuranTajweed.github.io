@@ -46,6 +46,8 @@ h2{font-size:1.05rem;margin:0 0 6px}
 .center{text-align:center}
 .pass{color:var(--ok);font-weight:700}.fail{color:var(--bad);font-weight:700}
 /* Quran */
+.ar .w{display:inline;unicode-bidi:isolate;direction:rtl}
+.ar{overflow-wrap:normal;word-break:normal}
 .ar{font-family:"Amiri Quran",Amiri,"Noto Naskh Arabic",serif;font-size:1.9rem;line-height:2.3;direction:rtl;text-align:right;margin:0}
 .ar.hide .w{filter:blur(9px);cursor:pointer}.ar.hide .w.rev{filter:none}
 .w.ok{background:color-mix(in srgb,var(--ok) 25%,transparent);border-radius:6px}
@@ -58,12 +60,12 @@ h2{font-size:1.05rem;margin:0 0 6px}
 .out{margin-top:6px}
 .sw{display:inline-block;width:.8em;height:.8em;border-radius:50%;margin:0 4px 0 10px;vertical-align:middle}
 label.chk{display:flex;gap:6px;align-items:center;cursor:pointer;font-size:.9rem}
-tajweed.ham_wasl,tajweed.slnt,tajweed.laam_shamsiyah{color:#9a9a9a}
-tajweed.madda_normal{color:#c7790a}
-tajweed.madda_permissible,tajweed.madda_necessary,tajweed.madda_obligatory{color:#d1261b}
-tajweed.qalaqah{color:#2563eb}
-tajweed.ghunnah,tajweed.ikhfa,tajweed.ikhfa_shafawi,tajweed.iqlab{color:#16a34a}
-tajweed.idgham_ghunnah,tajweed.idgham_wo_ghunnah,tajweed.idgham_shafawi,tajweed.idgham_mutajanisayn,tajweed.idgham_mutaqaribayn{color:#9333ea}
+.tj-ham_wasl,.tj-slnt,.tj-laam_shamsiyah{color:#9a9a9a}
+.tj-madda_normal{color:#c7790a}
+.tj-madda_permissible,.tj-madda_necessary,.tj-madda_obligatory{color:#d1261b}
+.tj-qalaqah{color:#2563eb}
+.tj-ghunnah,.tj-ikhfa,.tj-ikhfa_shafawi,.tj-iqlab{color:#16a34a}
+.tj-idgham_ghunnah,.tj-idgham_wo_ghunnah,.tj-idgham_shafawi,.tj-idgham_mutajanisayn,.tj-idgham_mutaqaribayn{color:#9333ea}
 [hidden]{display:none!important}
 button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #e2a842;outline-offset:2px}
 @media(max-width:520px){header{padding:8px 8px 0}main{padding:8px}nav{gap:3px}nav button{padding:10px 5px;font-size:.85rem}.card{padding:12px}.ar{font-size:1.65rem;line-height:2.2}}
@@ -179,19 +181,40 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
 const $ = (id) => document.getElementById(id);
 const KEY = 'qapp.v1';
 const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function tajweedHTML(source) {
-  const doc = new DOMParser().parseFromString('<div>' + source + '</div>', 'text/html');
+// Quran.com inserts Tajweed HTML tags inside Arabic words. Parse the whole verse
+// before splitting it into word spans, so tag attributes cannot become visible text.
+function renderArabicWords(source, containsTajweed) {
+  if (!containsTajweed) return String(source || '').trim().split(/\s+/).map(w => `<span class="w">${esc(w)}</span>`).join(' ');
   const allowed = new Set(['ham_wasl','slnt','laam_shamsiyah','madda_normal','madda_permissible','madda_necessary','madda_obligatory','qalaqah','ghunnah','ikhfa','ikhfa_shafawi','iqlab','idgham_ghunnah','idgham_wo_ghunnah','idgham_shafawi','idgham_mutajanisayn','idgham_mutaqaribayn']);
-  function clean(node) {
-    if (node.nodeType === Node.TEXT_NODE) return esc(node.textContent);
-    if (node.nodeType !== Node.ELEMENT_NODE) return '';
-    const inner = Array.from(node.childNodes).map(clean).join('');
-    if (node.tagName.toLowerCase() !== 'tajweed') return inner;
-    const cls = (node.getAttribute('class') || '').split(/\s+/).find((c) => allowed.has(c));
-    return cls ? `<tajweed class="${cls}">${inner}</tajweed>` : inner;
+  const doc = new DOMParser().parseFromString('<div>' + source + '</div>', 'text/html');
+  const words = [];
+  let pieces = [];
+  const flush = () => { if (pieces.length) { words.push(`<span class="w">${pieces.join('')}</span>`); pieces = []; } };
+  function walk(node, activeClasses) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      // The API may split a single Arabic word across multiple Tajweed tags.
+      const tokens = (node.textContent || '').split(/(\s+)/);
+      tokens.forEach(token => {
+        if (!token) return;
+        if (/^\s+$/.test(token)) { flush(); return; }
+        const safe = esc(token);
+        pieces.push(activeClasses.length ? `<span class="${activeClasses.join(' ')}">${safe}</span>` : safe);
+      });
+      return;
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+    let classes = activeClasses;
+    if (node.tagName.toLowerCase() === 'tajweed') {
+      const cls = (node.getAttribute('class') || '').split(/\s+/).find(c => allowed.has(c));
+      if (cls) classes = [...activeClasses, 'tj-' + cls];
+    }
+    Array.from(node.childNodes).forEach(child => walk(child, classes));
   }
-  return Array.from(doc.body.firstElementChild?.childNodes || []).map(clean).join('');
+  Array.from(doc.body.firstElementChild?.childNodes || []).forEach(node => walk(node, []));
+  flush();
+  return words.join(' ');
 }
+
 let S = JSON.parse(localStorage.getItem(KEY) || 'null') || { mem: {}, letters: {}, days: [], repeat: 3 };
 const save = () => localStorage.setItem(KEY, JSON.stringify(S));
 const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
@@ -359,7 +382,7 @@ function loadSurah(n) {
 
 function draw() {
   $('ayat').innerHTML = cur.map((a, i) => {
-    const words = (a.tj || a.ar).split(' ').map((w) => `<span class="w">${a.tj ? tajweedHTML(w) : esc(w)}</span>`).join(' ');
+    const words = renderArabicWords(a.tj || a.ar, Boolean(a.tj));
     const mem = S.mem[a.k];
     return `<div class="card ayah ${mem ? 'mem' : ''}" data-i="${i}">
       <div class="row" style="margin:0;justify-content:space-between"><span class="mu">${a.k}</span>

@@ -1,5 +1,5 @@
-const SHELL = 'quran-learner-shell-v2';
-const DATA = 'quran-learner-data-v2';
+const SHELL = 'quran-learner-shell-v3';
+const DATA = 'quran-learner-data-v3';
 const APP_FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 const API_HOSTS = new Set(['api.alquran.cloud', 'api.quran.com']);
 

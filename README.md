@@ -32,3 +32,7 @@ A static, installable Quran and Arabic learning progressive web app (PWA).
 ## Basic local test
 
 From this directory, run `python -m http.server 8000` and browse to `http://localhost:8000/`. Microphone and install behavior should be retested on the published HTTPS GitHub Pages URL.
+
+## Tajweed display repair (November 2026)
+
+The verse renderer parses the **complete** Quran.com Tajweed markup before dividing the Arabic text into word elements. This prevents class attributes appearing as visible Arabic text. The service worker shell version is `v3`, ensuring existing installs can receive the updated code. After deploying, refresh the published website; for a stubborn cached version, close and reopen the PWA or unregister the old service worker in browser DevTools.
