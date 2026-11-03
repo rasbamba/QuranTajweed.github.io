@@ -174,10 +174,10 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
 <!-- ============ QURAN ============ -->
 <section id="t-quran">
 <section class="hero-banner" aria-labelledby="heroTitle">
-    <div class="hero-content"><p class="eyebrow gold">BISMILLAH · BEGIN YOUR JOURNEY</p><h1 id="heroTitle">Learn the Quran.<br><em>Recite with confidence.</em></h1><p>Read each ayah, listen to a trusted reciter, understand its meaning and practice at your own pace.</p><div class="hero-actions"><button id="heroContinue" class="btn-gold" type="button">Continue learning <span>↗</span></button><button id="heroTajweed" class="btn-outline-light" type="button">Discover Tajweed</button></div></div>
+    <div class="hero-content"><p class="eyebrow gold">BISMILLAH · BEGIN YOUR JOURNEY</p><h1 id="heroTitle">Learn the Quran.<br><em>Recite with confidence.</em></h1><p>Read, listen, learn and practise at your pace.</p><div class="hero-actions"><button id="heroContinue" class="btn-gold" type="button">Continue learning <span>↗</span></button><button id="heroTajweed" class="btn-outline-light" type="button">Discover Tajweed</button></div></div>
     <div class="hero-art" aria-hidden="true"><span class="art-star">✦</span><span class="art-crescent">☾</span><span class="art-dome"></span></div>
   </section>
-  <div class="section-heading"><div><p class="eyebrow">TODAY'S LEARNING</p><h2>Study an ayah</h2></div><span class="section-subtitle">Read · Listen · Reflect</span></div>
+  <div class="section-heading"><div><p class="eyebrow">TODAY'S LEARNING</p><h2>Study an ayah</h2></div></div>
   <div class="focus-grid" id="focusGrid">
     <article class="focus-card" aria-labelledby="focusedTitle">
       <div class="focus-selectors">
@@ -195,12 +195,12 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
       <p class="focus-source">Quran content: AlQuran Cloud · <a id="focusSourceLink" href="https://quran.com" target="_blank" rel="noopener noreferrer">View on Quran.com ↗</a></p>
     </article>
     <div class="insight-column">
-      <article class="insight-card"><span class="card-icon">✧</span><p class="eyebrow">UNDERSTAND THE MEANING</p><h3 id="meaningHeading">Explore this ayah</h3><p id="meaningBody">Read the English rendering and consult a verified tafsir for deeper context.</p><div class="reflect-panel"><strong>Reflect on this</strong><p>What can you learn from the ayah? Record a personal note below.</p></div><a id="meaningSource" href="https://quran.com" target="_blank" rel="noopener noreferrer" class="subtle-link">Read original verse and tafsir ↗</a></article>
+      <article class="insight-card"><span class="card-icon">✧</span><p class="eyebrow">UNDERSTAND THE MEANING</p><h3 id="meaningHeading">Explore this ayah</h3><p id="meaningBody">Read the English rendering and consult a verified tafsir for deeper context.</p><a id="meaningSource" href="https://quran.com" target="_blank" rel="noopener noreferrer" class="subtle-link">Read original verse and tafsir ↗</a></article>
       <article class="insight-card"><span class="card-icon gold-icon">◇</span><p class="eyebrow">TAJWEED IN THIS AYAH</p><h3>Listen for these rules</h3><div id="tajweedList" class="tajweed-rules"><p>Loading Tajweed highlights…</p></div><button id="sidePractice" type="button" class="text-action">Practise this ayah →</button></article>
-      <article class="insight-card"><p class="eyebrow">MY LEARNING NOTES</p><h3>Save a reflection</h3><textarea id="focusNotes" rows="3" placeholder="Write a reflection or key point…" aria-label="Notes for this verse"></textarea><small>Stored only on this device; included in progress exports.</small></article>
+      <article class="insight-card"><p class="eyebrow">MY LEARNING NOTES</p><h3>Save a reflection</h3><textarea id="focusNotes" rows="3" placeholder="Write a reflection or key point…" aria-label="Notes for this verse"></textarea></article>
     </div>
   </div>
-  <details class="advanced-panel" id="audioPanel"><summary><span>♫</span> Continuous Quran Audio Player &amp; Offline Downloads <span class="summary-chevron">⌄</span></summary>
+  <details class="advanced-panel" id="audioPanel"><summary><span>♫</span> Audio Settings &amp; Offline Downloads <span class="summary-chevron">⌄</span></summary>
   <div class="card">
     <div class="row">
       <button id="hideBtn">Memorise mode: off</button>
@@ -208,7 +208,7 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
       <label class="mu">Repeat <select id="rep" aria-label="Repeat count"><option>1</option><option selected>3</option><option>5</option><option>10</option></select>×</label>
     </div>
     <div class="player" role="region" aria-label="Continuous Quran audio player">
-      <h2>Quran Audio Player</h2>
+      <h2>Playback settings</h2>
       <div class="row">
         <label>Reading <select id="audioMode" aria-label="Reading mode">
           <option value="surah">Selected surah only</option>
@@ -216,19 +216,11 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
           <option value="full">Full Quran (Surah 1–114)</option>
         </select></label>
         <label class="basmala-setting"><input type="checkbox" id="audioBasmala" checked> Recite Bismillah before each surah (except 1 and 9)</label>
-        <label>Speed <select id="audioSpeed" aria-label="Audio playback speed"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></label>
       </div>
-      <div class="player-controls">
-        <button id="audioPrev" title="Previous verse" aria-label="Previous verse">⏮</button>
-        <button id="audioToggle" class="pri" aria-label="Play or pause">▶ Play</button>
-        <button id="audioNext" title="Next verse" aria-label="Next verse">⏭</button>
-        <button id="audioStop" title="Stop playback">■ Stop</button>
-      </div>
-      <div id="audioStatus" class="player-status" aria-live="polite">Ready to play</div>
-      <p class="note">Mishary Alafasy recitation. Download audio before going offline. Lock-screen playback depends on your phone and browser: Android usually works, while iOS can stop during track transitions.</p>
+      <p class="note">Use the player at the bottom of the screen. Lock-screen track changes depend on your device.</p>
       <div class="offline-panel" aria-label="Offline Quran download manager">
         <h2>Offline Quran downloads</h2>
-        <p class="note">Save 64 kbps recitation files to this device. Downloads need internet, an open app, and enough free storage. The full Quran has 6,236 audio files and may require hundreds of MB. Downloads are private to this browser installation and may be removed by device storage cleanup.</p>
+        <p class="note">Download while online. Full Quran audio needs significant storage.</p>
         <div class="row">
           <button id="downloadSurah" class="pri">⬇ Download selected surah</button>
           <button id="downloadAll">⬇ Download full Quran</button>
@@ -255,17 +247,17 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
       <button id="mushafMode" aria-pressed="true" type="button">Mushaf reading</button>
       <button id="studyMode" aria-pressed="false" type="button">Verse study</button>
     </div>
-    <span class="reader-explain">Select any ayah in Mushaf view to open its translation and study tools.</span>
+    
   </div>
   <div id="mushafReader" class="mushaf-view">
     <div class="mushaf-page"><div class="mushaf-border"><div id="mushafHeader" class="mushaf-header"></div><div class="mushaf-ornament" aria-hidden="true">۞ ❀ ۞</div><div id="mushafBasmala" class="basmala-intro basmala-mushaf" lang="ar" dir="rtl" hidden></div><div id="mushafBody" class="mushaf-body" lang="ar" dir="rtl"></div><div class="mushaf-footer"><span id="mushafFooterName"></span><span id="mushafFooterProgress"></span></div></div></div>
     <div class="mushaf-pagination"><button id="mushafPrev" type="button">Previous section</button><span id="mushafSection"></span><button id="mushafNext" type="button">Next section</button></div>
-    <p class="mushaf-caption">Mushaf-inspired layout. Reading sections are not official Madani Mushaf page numbers or page breaks.</p>
+    <p class="mushaf-caption">Seven-ayah sections; not printed Mushaf pagination.</p>
     <div id="mushafLearning" class="mushaf-learning" hidden></div>
   </div>
   <div id="ayat" hidden></div>
   </details>
-  <p class="warn">Qur’an text, translation, transliteration and audio require public third-party APIs. Verify the text against a printed Mushaf. Voice checking compares speech recognition with Arabic words; it cannot verify tajweed, makhārij or memorisation. A qualified teacher should assess recitation.</p>
+  <p class="reader-disclaimer">Learning aid only · Check recitation with a qualified teacher · <a href="https://quran.com" target="_blank" rel="noopener noreferrer">Quran source</a></p>
 </section>
 
 <!-- ============ TAJWEED ACADEMY ============ -->
@@ -282,9 +274,9 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
 
 <!-- ============ RECITATION PRACTICE ============ -->
 <section id="t-practice" hidden class="learning-section">
-  <div class="page-intro"><p class="eyebrow">LISTEN · REPEAT · REFLECT</p><h1>Recitation practice</h1><p>Listen to a verse, record your own voice locally, and optionally compare speech-recognised words. Word matches are not an assessment of Tajweed accuracy.</p></div>
-  <div class="practice-grid"><article class="practice-main-card"><div class="practice-tags"><span id="practiceReference">Selected ayah</span><span>HAFS · MISHARY ALAFASY</span></div><div id="practiceBasmala" class="basmala-intro basmala-practice" dir="rtl" lang="ar" hidden></div><div class="practice-arabic" id="practiceArabic" lang="ar" dir="rtl">Choose a surah in the Quran Reader to begin.</div><div class="practice-actions"><button id="practiceListen" class="pri">▶ Listen to reciter</button><button id="practiceRecognize">◉ Use microphone recognition</button></div><p class="note">Recognition may use your browser provider's speech service. No microphone audio is sent to an AI service by this app.</p><label class="eyebrow" for="practiceWords">RECOGNISED WORDS</label><textarea id="practiceWords" rows="4" lang="ar" dir="rtl" placeholder="Recognised Arabic words appear here. You can also type them."></textarea><button id="practiceCheck" class="pri">Check recognised words →</button><p id="practiceResult" class="practice-result" role="status" aria-live="polite">Compare written words with the selected verse. Seek teacher feedback on pronunciation and Tajweed.</p></article>
-  <div class="insight-column"><article class="insight-card"><span class="card-icon">◉</span><p class="eyebrow">RECORD &amp; PLAY BACK</p><h3>Hear your own voice</h3><p>Record locally, stop, then replay your recitation. Recording works on secure HTTPS pages and supported browsers.</p><div class="row"><button id="recordStart">● Record</button><button id="recordStop" disabled>■ Stop</button></div><audio id="recordPlayback" controls hidden></audio><p id="recordStatus" class="note" role="status">Your recording stays on this device until you leave or reload the page.</p></article><article class="insight-card"><p class="eyebrow">PRACTICE METHOD</p><h3>The 3-step loop</h3><ol class="practice-steps"><li><strong>Listen</strong><span>Hear the verse from a trusted reciter.</span></li><li><strong>Repeat</strong><span>Practice short phrases slowly.</span></li><li><strong>Review</strong><span>Compare the words, then seek teacher feedback.</span></li></ol></article></div>
+  <div class="page-intro"><p class="eyebrow">LISTEN · REPEAT · REVIEW</p><h1>Recitation practice</h1><p>Listen, record and compare recognised words. Tajweed requires teacher feedback.</p></div>
+  <div class="practice-grid"><article class="practice-main-card"><div class="practice-tags"><span id="practiceReference">Selected ayah</span><span>HAFS · MISHARY ALAFASY</span></div><div id="practiceBasmala" class="basmala-intro basmala-practice" dir="rtl" lang="ar" hidden></div><div class="practice-arabic" id="practiceArabic" lang="ar" dir="rtl">Choose a surah in the Quran Reader to begin.</div><div class="practice-actions"><button id="practiceListen" class="pri">▶ Listen to reciter</button><button id="practiceRecognize">◉ Use microphone recognition</button></div><p class="note">Speech recognition may use your browser provider.</p><label class="eyebrow" for="practiceWords">RECOGNISED WORDS</label><textarea id="practiceWords" rows="4" lang="ar" dir="rtl" placeholder="Recognised Arabic words appear here. You can also type them."></textarea><button id="practiceCheck" class="pri">Check recognised words →</button><p id="practiceResult" class="practice-result" role="status" aria-live="polite">Word comparison is not a Tajweed score.</p></article>
+  <div class="insight-column"><article class="insight-card"><span class="card-icon">◉</span><p class="eyebrow">RECORD &amp; PLAY BACK</p><h3>Hear your own voice</h3><p>Record and replay your voice.</p><div class="row"><button id="recordStart">● Record</button><button id="recordStop" disabled>■ Stop</button></div><audio id="recordPlayback" controls hidden></audio><p id="recordStatus" class="note" role="status">Your recording stays on this device until you leave or reload the page.</p></article><article class="insight-card"><p class="eyebrow">PRACTICE METHOD</p><h3>The 3-step loop</h3><ol class="practice-steps"><li><strong>Listen</strong><span>Hear the verse from a trusted reciter.</span></li><li><strong>Repeat</strong><span>Practice short phrases slowly.</span></li><li><strong>Review</strong><span>Compare the words, then seek teacher feedback.</span></li></ol></article></div>
   </div>
 </section>
 
@@ -315,7 +307,7 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
       <label class="pri" style="padding:8px 12px;border-radius:10px;cursor:pointer">⬆ Import<input type="file" id="importFile" accept="application/json" hidden></label>
       <button id="resetBtn">Reset all</button>
     </div>
-    <p class="note">Your progress lives in this browser. Export it now and then so you can restore it on another device.</p>
+    <p class="note">Progress is saved on this device. Export to back it up.</p>
   </div>
 </section>
 
@@ -323,7 +315,7 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
 <section id="t-install" hidden>
   <div class="card">
     <h2>Install the app</h2>
-    <p class="mu">Install it like a normal app. The Quran audio player supports background playback and lock-screen controls on compatible devices. Phone sleep restrictions may interrupt automatic verse or surah transitions; continuous playback is not guaranteed, especially on iOS. Download recitation audio under Quran → Offline Quran downloads before travelling without internet.</p>
+    <p class="mu">Install from your browser. For offline playback, download surahs in the Audio settings first. Screen-off track transitions vary by device.</p>
     <div class="row"><button id="installBtn" class="pri" hidden>📲 Install now</button><span class="mu" id="installMsg"></span></div>
   </div>
   <div class="card">
@@ -333,13 +325,36 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
     <p class="mu">Open in Chrome, tap the ⋮ menu, then “Install app” or “Add to Home screen”.</p>
     <h2 style="margin-top:12px">Windows / Mac / Linux</h2>
     <p class="mu">In Chrome or Edge, click the install icon in the address bar (or ⋮ → “Install Quran & Arabic Learner”). It opens in its own window, with a desktop shortcut.</p>
-    <p class="warn">Installing needs the page to be served over HTTPS (or localhost). Microphone features also need HTTPS. Upload the whole folder to any static host, such as Netlify, GitHub Pages, Cloudflare Pages or Vercel.</p>
+    <p class="note">Installation and microphone access require HTTPS.</p>
   </div>
 </section>
 
 </main>
   </div>
 </div>
+
+<aside id="persistentPlayer" class="quran-dock" role="region" aria-label="Quran audio player">
+  <div class="dock-info">
+    <span class="dock-art" aria-hidden="true">☾</span>
+    <div class="dock-track"><strong id="dockTitle">Quran Audio Player</strong><span id="audioStatus" class="dock-status" aria-live="polite">Ready to play</span></div>
+  </div>
+  <div class="dock-controls" role="group" aria-label="Playback controls">
+    <button id="audioPrev" type="button" aria-label="Previous ayah" title="Previous ayah">⏮</button>
+    <button id="audioToggle" class="dock-main-btn" type="button" aria-label="Play" title="Play Quran">▶</button>
+    <button id="audioNext" type="button" aria-label="Next ayah" title="Next ayah">⏭</button>
+    <button id="audioStop" type="button" aria-label="Stop playback" title="Stop playback">■</button>
+  </div>
+  <div class="dock-timeline">
+    <label for="dockSeek" class="visually-hidden">Seek within this ayah</label>
+    <input id="dockSeek" type="range" min="0" max="100" step="1" value="0" aria-label="Audio progress" />
+    <span id="dockTime">0:00 / 0:00</span>
+  </div>
+  <div class="dock-options">
+    <label class="dock-speed-label" for="audioSpeed">Speed</label>
+    <select id="audioSpeed" aria-label="Audio playback speed"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select>
+    <button id="dockSettings" type="button" title="Audio settings and offline downloads" aria-label="Open audio settings">⚙ <span>Settings</span></button>
+  </div>
+</aside>
 
 <script>
 const $ = (id) => document.getElementById(id);
@@ -679,11 +694,36 @@ $('rep').onchange = () => { S.repeat = +$('rep').value; save(); };
 $('rep').value = S.repeat || 3;
 
 function updateAudioStatus(message) {
-  $('audioStatus').textContent = message || (pl.intro ? 'Surah ' + curN + ' · Opening Bismillah' : 'Surah ' + curN + ' · Ayah ' + ((cur[pl.i] || {}).num || 1)) + (au.paused ? ' · Paused' : ' · Playing');
-  $('audioToggle').textContent = pl.on && !au.paused ? '⏸ Pause' : '▶ Play';
+  const name = surahs?.find(s => s.number === curN)?.englishName || `Surah ${curN}`;
+  $('dockTitle').textContent = `${curN}. ${name}`;
+  $('audioStatus').textContent = message || (pl.on ? (pl.intro ? 'Opening Bismillah' : `Ayah ${cur[pl.i]?.num || 1}`) + (au.paused ? ' · Paused' : ' · Playing') : 'Ready to play');
+  const playing = pl.on && !au.paused;
+  $('audioToggle').textContent = playing ? '⏸' : '▶';
+  $('audioToggle').setAttribute('aria-label', playing ? 'Pause Quran recitation' : 'Play Quran recitation');
+  $('audioToggle').title = playing ? 'Pause' : 'Play';
   $('playAll').textContent = pl.on ? '■ Stop surah' : '▶ Play surah';
-  if ('mediaSession' in navigator) navigator.mediaSession.playbackState = pl.on && !au.paused ? 'playing' : 'paused';
+  if ('mediaSession' in navigator) navigator.mediaSession.playbackState = playing ? 'playing' : 'paused';
 }
+function formatAudioTime(seconds) {
+  if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
+  const n = Math.floor(seconds);
+  return Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0');
+}
+function updateDockTimeline() {
+  const duration = Number.isFinite(au.duration) && au.duration > 0 ? au.duration : 0;
+  const current = Number.isFinite(au.currentTime) ? au.currentTime : 0;
+  $('dockSeek').value = duration ? Math.min(100, Math.round(current / duration * 100)) : 0;
+  $('dockSeek').disabled = !duration;
+  $('dockTime').textContent = `${formatAudioTime(current)} / ${formatAudioTime(duration)}`;
+}
+$('dockSeek').onchange = e => {
+  if (Number.isFinite(au.duration) && au.duration > 0) au.currentTime = au.duration * (+e.target.value / 100);
+};
+$('dockSettings').onclick = () => {
+  openTab('quran');
+  $('audioPanel').open = true;
+  $('audioPanel').scrollIntoView({behavior: 'smooth', block:'start'});
+};
 function setAudioMetadata() {
   if (!('mediaSession' in navigator)) return;
   const surah = surahs?.find(s => s.number === curN);
@@ -708,6 +748,7 @@ function cue() {
     if (c && readerMode === 'study') c.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
   au.src = pl.intro ? BASMALA_AUDIO : a.au;
+  updateDockTimeline();
   au.playbackRate = +$('audioSpeed').value || 1;
   setAudioMetadata();
   const playback = au.play();
@@ -751,6 +792,10 @@ au.onended = () => {
 };
 au.onplay = () => { updateAudioStatus(); window.updateFocusAudio?.(); };
 au.onpause = () => { updateAudioStatus(); window.updateFocusAudio?.(); };
+au.ontimeupdate = updateDockTimeline;
+au.onloadedmetadata = updateDockTimeline;
+au.ondurationchange = updateDockTimeline;
+au.onseeked = updateDockTimeline;
 au.onerror = () => { if (pl.on) { stopPlay(); updateAudioStatus('Unable to play the audio. Check your internet connection.'); } };
 $('audioSpeed').onchange = () => { au.playbackRate = +$('audioSpeed').value; };
 $('audioBasmala').checked = S.audioBasmala !== false;
@@ -980,6 +1025,7 @@ $('requestStorage').onclick = async () => {
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 setReaderMode('mushaf');
 initSurahs();
+updateDockTimeline();
 updateOfflineStatus();
 </script>
 <script src="quranpath.js"></script>

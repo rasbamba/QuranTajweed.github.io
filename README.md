@@ -1,3 +1,14 @@
+# QuranPath v9 — Persistent bottom audio player
+
+The Quran player is now fixed to the bottom of every app page (mobile and desktop), with play/pause, next, previous, stop, seeking within an ayah, speed, current surah/ayah, and a button to access the full Quran mode, Bismillah option, repeats, and offline downloads. The interface also removes repeated and nonessential explanatory text while retaining Quran translations, Tajweed lessons, source links, and short educational/privacy warnings.
+
+- Upload every file in this folder to the **root** of `rasbamba/QuranTajweed.github.io` on the `main` branch.
+- Enable or keep GitHub Pages active. Load `https://rasbamba.github.io/QuranTajweed.github.io/`.
+- Hard-refresh once to update the installed PWA service worker.
+- The dock stays visible on all tabs. **Settings** opens the playback settings and downloads on the Quran Reader page.
+- Audio downloaded to Cache Storage remains device-specific. Phone lock-screen automatic track transitions remain subject to browser/OS limitations.
+- Al-Fatihah's Bismillah is its first ayah and is not duplicated. At-Tawbah has no opening Bismillah.
+
 # Quran & Arabic Learner
 
 A static, installable Quran and Arabic learning progressive web app (PWA).

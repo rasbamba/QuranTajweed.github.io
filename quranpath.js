@@ -1,4 +1,4 @@
-/* QuranPath v7: progressive UI layer over the existing Quran reader and audio engine. */
+/* QuranPath v9: progressive UI layer over the existing Quran reader and audio engine. */
 (() => {
   'use strict';
   let focusIndex = 0;
@@ -196,4 +196,6 @@
   recStop.addEventListener('click',()=>{if(localRecorder?.state==='recording')localRecorder.stop();});
   addEventListener('beforeunload',()=>{if(recordingURL)URL.revokeObjectURL(recordingURL);localStream?.getTracks().forEach(track=>track.stop());});
   openTab('quran');
+  // API/cache responses can finish before this UI layer attaches; render again then.
+  if (typeof cur !== 'undefined' && cur.length) renderFocusedVerse(true);
 })();

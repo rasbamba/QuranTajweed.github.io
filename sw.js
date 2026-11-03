@@ -1,5 +1,5 @@
-const SHELL = 'quran-learner-shell-v8';
-const DATA = 'quran-learner-data-v8';
+const SHELL = 'quran-learner-shell-v9';
+const DATA = 'quran-learner-data-v9';
 const AUDIO_CACHE = 'quran-learner-offline-audio-v1';
 const AUDIO_HOST = 'cdn.islamic.network';
 const APP_FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './quranpath.css', './quranpath.js'];
