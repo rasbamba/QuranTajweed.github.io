@@ -25,7 +25,7 @@ nav{display:flex;gap:6px}
 main{max-width:800px;margin:0 auto;padding:12px}
 button,select,input{font:inherit;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;padding:8px 12px;cursor:pointer;max-width:100%}
 nav button{flex:1;border-radius:10px 10px 0 0;border-bottom:none}
-button.on,button.pri{background:var(--ac);color:#fff;border-color:var(--ac)}
+button.on,button.pri{background:#0f6b4f;color:#fff;border-color:#0f6b4f}
 button:disabled{opacity:.5;cursor:default}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin:10px 0}
 h2{font-size:1.05rem;margin:0 0 6px}
@@ -65,6 +65,8 @@ tajweed.qalaqah{color:#2563eb}
 tajweed.ghunnah,tajweed.ikhfa,tajweed.ikhfa_shafawi,tajweed.iqlab{color:#16a34a}
 tajweed.idgham_ghunnah,tajweed.idgham_wo_ghunnah,tajweed.idgham_shafawi,tajweed.idgham_mutajanisayn,tajweed.idgham_mutaqaribayn{color:#9333ea}
 [hidden]{display:none!important}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #e2a842;outline-offset:2px}
+@media(max-width:520px){header{padding:8px 8px 0}main{padding:8px}nav{gap:3px}nav button{padding:10px 5px;font-size:.85rem}.card{padding:12px}.ar{font-size:1.65rem;line-height:2.2}}
 </style>
 </head>
 <body>
@@ -122,7 +124,7 @@ tajweed.idgham_ghunnah,tajweed.idgham_wo_ghunnah,tajweed.idgham_shafawi,tajweed.
     <p class="mu" style="font-size:.8rem;margin:4px 0 0">Colours: <span class="sw" style="background:#9a9a9a"></span>silent <span class="sw" style="background:#c7790a"></span>madd 2 <span class="sw" style="background:#d1261b"></span>madd longer <span class="sw" style="background:#2563eb"></span>qalqalah <span class="sw" style="background:#16a34a"></span>ghunnah/ikhfā’/iqlāb <span class="sw" style="background:#9333ea"></span>idghām</p>
   </div>
   <div id="ayat"></div>
-  <p class="warn">Text, transliteration, translation and audio load from public Quran APIs (alquran.cloud, Quran.com). Tafsir is Ibn Kathir (abridged). Verify against a printed Mushaf and learn tajweed from a qualified teacher. “Check my voice” compares words only.</p>
+  <p class="warn">Qur’an text, translation, transliteration and audio require public third-party APIs. Verify the text against a printed Mushaf. Voice checking compares speech recognition with Arabic words; it cannot verify tajweed, makhārij or memorisation. A qualified teacher should assess recitation.</p>
 </section>
 
 <!-- ============ PROGRESS ============ -->
@@ -176,9 +178,23 @@ tajweed.idgham_ghunnah,tajweed.idgham_wo_ghunnah,tajweed.idgham_shafawi,tajweed.
 <script>
 const $ = (id) => document.getElementById(id);
 const KEY = 'qapp.v1';
+const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function tajweedHTML(source) {
+  const doc = new DOMParser().parseFromString('<div>' + source + '</div>', 'text/html');
+  const allowed = new Set(['ham_wasl','slnt','laam_shamsiyah','madda_normal','madda_permissible','madda_necessary','madda_obligatory','qalaqah','ghunnah','ikhfa','ikhfa_shafawi','iqlab','idgham_ghunnah','idgham_wo_ghunnah','idgham_shafawi','idgham_mutajanisayn','idgham_mutaqaribayn']);
+  function clean(node) {
+    if (node.nodeType === Node.TEXT_NODE) return esc(node.textContent);
+    if (node.nodeType !== Node.ELEMENT_NODE) return '';
+    const inner = Array.from(node.childNodes).map(clean).join('');
+    if (node.tagName.toLowerCase() !== 'tajweed') return inner;
+    const cls = (node.getAttribute('class') || '').split(/\s+/).find((c) => allowed.has(c));
+    return cls ? `<tajweed class="${cls}">${inner}</tajweed>` : inner;
+  }
+  return Array.from(doc.body.firstElementChild?.childNodes || []).map(clean).join('');
+}
 let S = JSON.parse(localStorage.getItem(KEY) || 'null') || { mem: {}, letters: {}, days: [], repeat: 3 };
 const save = () => localStorage.setItem(KEY, JSON.stringify(S));
-const today = () => new Date().toISOString().slice(0, 10);
+const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
 function touch() { if (!S.days.includes(today())) S.days.push(today()); save(); }
 function streak() {
   let n = 0, d = new Date();
@@ -190,7 +206,7 @@ touch();
 
 /* ---------- tabs ---------- */
 document.querySelector('nav').onclick = (e) => {
-  const t = e.target.dataset.t; if (!t) return;
+  const t = e.target.closest('button')?.dataset.t; if (!t) return;
   ['alpha', 'quran', 'prog', 'install'].forEach((s) => { $('t-' + s).hidden = s !== t; });
   document.querySelectorAll('nav button').forEach((b) => b.className = b.dataset.t === t ? 'on' : '');
   if (t === 'prog') renderProgress();
@@ -293,9 +309,9 @@ $('lSay').onclick = () => {
     if (best >= 0.75) {
       S.letters[curLetter[0]] = Math.max(score, S.letters[curLetter[0]] || 0);
       save(); renderLetters();
-      out.innerHTML = `<span class="pass">Good! ${score}%</span> — you learned ${curLetter[0]}. Heard: ${raw}`;
+      out.innerHTML = `<span class="pass">Good! ${score}%</span> — you learned ${curLetter[0]}. Heard: ${esc(raw)}`;
     } else {
-      out.innerHTML = `<span class="fail">${score}%</span> — listen, then try again slowly. Heard: ${raw || '…'}`;
+      out.innerHTML = `<span class="fail">${score}%</span> — listen, then try again slowly. Heard: ${esc(raw || '…')}`;
     }
   }, (msg) => { out.textContent = msg; });
 };
@@ -313,7 +329,8 @@ function fillSurahs(list) {
 }
 function initSurahs() {
   if (surahs) { fillSurahs(surahs); loadSurah(S.lastSurah || 1); return; }
-  fetch('https://api.alquran.cloud/v1/surah').then((r) => r.json()).then((r) => {
+  fetch('https://api.alquran.cloud/v1/surah').then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then((r) => {
+    if (!Array.isArray(r.data)) throw new Error('Invalid surah list');
     surahs = r.data.map((s) => ({ number: s.number, englishName: s.englishName, englishNameTranslation: s.englishNameTranslation, numberOfAyahs: s.numberOfAyahs }));
     localStorage.setItem('qapp.surahs', JSON.stringify(surahs));
     fillSurahs(surahs); loadSurah(S.lastSurah || 1);
@@ -325,9 +342,10 @@ function loadSurah(n) {
   n = +n; curN = n; S.lastSurah = n; save(); sel.value = n;
   pl.on = false; au.pause();
   $('ayat').innerHTML = '<p class="mu">Loading surah ' + n + '…</p>';
-  const A = fetch('https://api.alquran.cloud/v1/surah/' + n + '/editions/quran-uthmani,en.transliteration,en.sahih,ar.alafasy').then((r) => r.json());
+  const A = fetch('https://api.alquran.cloud/v1/surah/' + n + '/editions/quran-uthmani,en.transliteration,en.sahih,ar.alafasy').then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
   const T = fetch('https://api.quran.com/api/v4/quran/verses/uthmani_tajweed?chapter_number=' + n).then((r) => r.json()).catch(() => null);
   Promise.all([A, T]).then(([a, t]) => {
+    if (!a?.data || !Array.isArray(a.data) || a.data.length < 4 || a.data.some((edition) => !Array.isArray(edition.ayahs))) throw new Error('Invalid Qur’an API response');
     const e = a.data, tj = {};
     if (t && t.verses) t.verses.forEach((v) => { tj[v.verse_key] = v.text_uthmani_tajweed; });
     cur = e[0].ayahs.map((x, i) => ({
@@ -341,14 +359,14 @@ function loadSurah(n) {
 
 function draw() {
   $('ayat').innerHTML = cur.map((a, i) => {
-    const words = (a.tj || a.ar).split(' ').map((w) => `<span class="w">${w}</span>`).join(' ');
+    const words = (a.tj || a.ar).split(' ').map((w) => `<span class="w">${a.tj ? tajweedHTML(w) : esc(w)}</span>`).join(' ');
     const mem = S.mem[a.k];
     return `<div class="card ayah ${mem ? 'mem' : ''}" data-i="${i}">
       <div class="row" style="margin:0;justify-content:space-between"><span class="mu">${a.k}</span>
         <label class="chk"><input type="checkbox" data-a="mem" ${mem ? 'checked' : ''}> Memorised</label></div>
       <p class="ar ${hide ? 'hide' : ''}">${words}</p>
-      <p class="tr">${a.tr}</p>
-      <p>${a.en}</p>
+      <p class="tr">${esc(a.tr)}</p>
+      <p>${esc(a.en)}</p>
       <div class="row">
         <button data-a="p">🔊 Play</button>
         <button data-a="s">🐢 Slow</button>
@@ -426,11 +444,9 @@ $('ayat').onclick = (e) => {
       const pct = Math.round(good / target.length * 100);
       const ws = card.querySelectorAll('.ar .w');
       ws.forEach((el, j) => { if (target[j] === undefined) return; const ok = heard.some((h) => sim(h, target[j]) >= 0.7); el.className = 'w ' + (ok ? 'ok' : 'bad'); el.classList.add('rev'); });
-      out.innerHTML = `<span class="${pct >= 90 ? 'pass' : 'fail'}">${pct}% of words matched.</span> Heard: ${raw}`;
-      if (pct >= 90 && !S.mem[a.k]) {
-        S.mem[a.k] = true; save(); touch(); draw(); updateSurahProgress();
-        out.innerHTML += ' ✅ Marked as memorised.';
-      }
+      out.innerHTML = `<span class="${pct >= 90 ? 'pass' : 'fail'}">${pct}% of words matched.</span> Heard: ${esc(raw)}. <strong>This is a transcription match, not a tajweed assessment.</strong>`;
+      // Do not automatically certify memorisation from speech-to-text similarity.
+      // Students mark completion manually after reviewing with a qualified teacher.
     }, (msg) => { out.textContent = msg; });
   }
 };

@@ -1,44 +1,50 @@
-const SHELL = 'qapp-shell-v1';
-const DATA = 'qapp-data-v1';
-const SHELL_FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
-const API_HOSTS = ['api.alquran.cloud', 'api.quran.com'];
+const SHELL = 'quran-learner-shell-v2';
+const DATA = 'quran-learner-data-v2';
+const APP_FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
+const API_HOSTS = new Set(['api.alquran.cloud', 'api.quran.com']);
 
-self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(SHELL).then((c) => c.addAll(SHELL_FILES)).then(() => self.skipWaiting()));
+self.addEventListener('install', (event) => {
+  event.waitUntil(caches.open(SHELL).then((cache) => cache.addAll(APP_FILES)).then(() => self.skipWaiting()));
 });
 
-self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== SHELL && k !== DATA).map((k) => caches.delete(k))))
-      .then(() => self.clients.claim())
-  );
+self.addEventListener('activate', (event) => {
+  event.waitUntil(Promise.all([
+    caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== SHELL && key !== DATA).map((key) => caches.delete(key)))),
+    self.clients.claim()
+  ]));
 });
 
-self.addEventListener('fetch', (e) => {
-  const url = new URL(e.request.url);
-  if (e.request.method !== 'GET') return;
-
-  // Quran data: network first, fall back to the last copy saved on this device.
-  if (API_HOSTS.includes(url.hostname)) {
-    e.respondWith(
-      fetch(e.request)
-        .then((res) => {
-          const copy = res.clone();
-          caches.open(DATA).then((c) => c.put(e.request, copy));
-          return res;
-        })
-        .catch(() => caches.match(e.request))
-    );
+self.addEventListener('fetch', (event) => {
+  const req = event.request;
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
+  if (API_HOSTS.has(url.hostname)) {
+    event.respondWith(fetch(req).then((response) => {
+      if (response.ok) {
+        const copy = response.clone();
+        event.waitUntil(caches.open(DATA).then((cache) => cache.put(req, copy)).catch(() => {}));
+      }
+      return response;
+    }).catch(async () => (await caches.match(req)) || Response.error()));
     return;
   }
-
-  // App files: cache first, then network. Offline navigation falls back to the app page.
-  if (url.origin === self.location.origin) {
-    e.respondWith(
-      caches.match(e.request).then((hit) =>
-        hit || fetch(e.request).catch(() => caches.match('./index.html'))
-      )
-    );
+  if (url.origin !== self.location.origin || !url.pathname.startsWith(new URL(self.registration.scope).pathname)) return;
+  // Network-first for navigation, allowing GitHub Pages deployments to update promptly.
+  if (req.mode === 'navigate') {
+    event.respondWith(fetch(req).then((response) => {
+      if (response.ok) {
+        const copy = response.clone();
+        event.waitUntil(caches.open(SHELL).then((cache) => cache.put('./index.html', copy)).catch(() => {}));
+      }
+      return response;
+    }).catch(async () => (await caches.match('./index.html')) || Response.error()));
+    return;
   }
+  event.respondWith(caches.match(req).then((cached) => cached || fetch(req).then((response) => {
+    if (response.ok) {
+      const copy = response.clone();
+      event.waitUntil(caches.open(SHELL).then((cache) => cache.put(req, copy)).catch(() => {}));
+    }
+    return response;
+  })));
 });
