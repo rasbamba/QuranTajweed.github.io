@@ -93,6 +93,8 @@ tajweed.idgham_ghunnah,tajweed.idgham_wo_ghunnah,tajweed.idgham_shafawi,tajweed.
 .mushaf .ayah .mu,.mushaf .ayah .note,.mushaf .ayah .out{color:var(--mu2)}
 .mushaf .ayah .tx{text-align:left}
 .mushaf .ayah button{background:transparent;color:var(--ink);border-color:color-mix(in srgb,var(--gold) 50%,transparent)}
+.mushaf .ayah.bism{border-bottom:none;padding:8px 4px 16px}
+.mushaf .ayah.bism .ar{font-size:1.7rem}
 .vend{color:var(--gold);font-size:1.25rem;margin:0 .15em}
 @media(max-width:480px){.mushaf .ayah .ar{font-size:1.65rem}.mushaf .surah-head .ar{font-size:1.35rem}}
 [hidden]{display:none!important}
@@ -419,9 +421,18 @@ function fetchSurah(n) {
       url: e[3].ayahs[i].audio,
       sName: meta ? meta.englishName : 'Surah ' + n
     }));
-    const data = { n, verses };
-    cacheSurah.set(n, data);
-    return data;
+    const addBism = (b) => {
+      const data = { n, verses: b ? [b, ...verses] : verses };
+      cacheSurah.set(n, data);
+      return data;
+    };
+    // Al-Fatiha (1) starts with the Bismillah as verse 1; At-Tawbah (9) has none.
+    if (n === 1 || n === 9) return addBism(null);
+    return fetchSurah(1).then((f1) => addBism({
+      s: n, a: 0, k: n + ':0', ar: BISM, tj: null, bism: true,
+      tr: f1.verses[0].tr, en: f1.verses[0].en, url: f1.verses[0].url,
+      sName: verses[0].sName
+    }));
   });
 }
 
@@ -447,6 +458,10 @@ function resetView() {
 
 function toArDigits(n) { return String(n).replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]); }
 function verseHTML(v) {
+  if (v.bism) return `<div class="card ayah bism${v.k === curK ? ' now' : ''}" data-k="${v.k}" id="v-${v.k}">
+    <p class="ar">${BISM}</p>
+    <div class="row"><button data-a="p">▶ Play Bismillah</button></div>
+  </div>`;
   const mem = S.mem[v.k];
   const words = v.tj ? cleanTajweed(v.tj) : v.ar.split(' ').map((w) => `<span class="w">${w}</span>`).join(' ') + ` <span class="vend">﴿${toArDigits(v.a)}﴾</span>`;
   return `<div class="card ayah${mem ? ' mem' : ''}${v.k === curK ? ' now' : ''}" data-k="${v.k}" id="v-${v.k}">
@@ -466,8 +481,8 @@ function verseHTML(v) {
 }
 function blockHTML(d) {
   const m = surahMeta(d.n);
-  const head = `<div class="surah-head"><h2>${d.n}. ${m ? m.englishName : 'Surah ' + d.n} <span class="mu">· ${m ? m.englishNameTranslation : ''} · ${d.verses.length} verses</span></h2>
-    ${d.n !== 1 && d.n !== 9 ? `<p class="ar" style="font-size:1.5rem;margin:6px 0 0;cursor:default">${BISM}</p>` : ''}</div>`;
+  const head = `<div class="surah-head"><h2>${d.n}. ${m ? m.englishName : 'Surah ' + d.n} <span class="mu">· ${m ? m.englishNameTranslation : ''} · ${d.verses.filter((v) => !v.bism).length} verses</span></h2>
+    </div>`;
   return `<div class="surah-block" data-n="${d.n}">${head}${d.verses.map(verseHTML).join('')}</div>`;
 }
 
@@ -660,7 +675,8 @@ $('rep').onchange = () => { S.repeat = +$('rep').value; save(); };
 function updateProgress() {
   let got, total, label;
   if (S.mode === 'single') {
-    total = flat.length; got = flat.filter((v) => S.mem[v.k]).length;
+    const real = flat.filter((v) => !v.bism);
+    total = real.length; got = real.filter((v) => S.mem[v.k]).length;
     label = total ? `Memorised ${got} / ${total} in this surah` : '';
   } else {
     total = 6236; got = Object.keys(S.mem).filter((k) => S.mem[k]).length;
@@ -676,7 +692,7 @@ $('hideBtn').onclick = () => {
   hide = !hide;
   $('hideBtn').textContent = 'Memorise mode: ' + (hide ? 'on' : 'off');
   $('hideBtn').className = hide ? 'on' : '';
-  document.querySelectorAll('#ayat .ar').forEach((p) => p.classList.toggle('hide', hide));
+  document.querySelectorAll('#ayat .ayah:not(.bism) .ar').forEach((p) => p.classList.toggle('hide', hide));
   document.querySelectorAll('#ayat .rev').forEach((el) => el.classList.remove('rev'));
 };
 
