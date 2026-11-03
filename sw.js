@@ -1,5 +1,7 @@
-const SHELL = 'quran-learner-shell-v4';
-const DATA = 'quran-learner-data-v4';
+const SHELL = 'quran-learner-shell-v6';
+const DATA = 'quran-learner-data-v6';
+const AUDIO_CACHE = 'quran-learner-offline-audio-v1';
+const AUDIO_HOST = 'cdn.islamic.network';
 const APP_FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 const API_HOSTS = new Set(['api.alquran.cloud', 'api.quran.com']);
 
@@ -9,7 +11,7 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(Promise.all([
-    caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== SHELL && key !== DATA).map((key) => caches.delete(key)))),
+    caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== SHELL && key !== DATA && key !== AUDIO_CACHE).map((key) => caches.delete(key)))),
     self.clients.claim()
   ]));
 });
@@ -18,6 +20,14 @@ self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
+  if (url.hostname === AUDIO_HOST && /^\/quran\/audio\/64\/ar\.alafasy\/\d+\.mp3$/.test(url.pathname)) {
+    event.respondWith(caches.open(AUDIO_CACHE).then(async (cache) => {
+      const cached = await cache.match(url.href);
+      if (cached) return cached;
+      return fetch(req);
+    }).catch(() => fetch(req)));
+    return;
+  }
   if (API_HOSTS.has(url.hostname)) {
     event.respondWith(fetch(req).then((response) => {
       if (response.ok) {
