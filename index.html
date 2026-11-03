@@ -70,12 +70,34 @@ tajweed.madda_permissible,tajweed.madda_necessary,tajweed.madda_obligatory{color
 tajweed.qalaqah{color:#2563eb}
 tajweed.ghunnah,tajweed.ikhfa,tajweed.ikhfa_shafawi,tajweed.iqlab{color:#16a34a}
 tajweed.idgham_ghunnah,tajweed.idgham_wo_ghunnah,tajweed.idgham_shafawi,tajweed.idgham_mutajanisayn,tajweed.idgham_mutaqaribayn{color:#9333ea}
+/* ===== Mushaf look: printed Qur'an page ===== */
+:root{--paper:#f6eed8;--paper2:#ece0bd;--ink:#2a1c0c;--gold:#a8832f;--mu2:#7a6a4e}
+@media(prefers-color-scheme:dark){:root{--paper:#2b2517;--paper2:#221d12;--ink:#f1e7c8;--gold:#d4b064;--mu2:#b9a77f}}
+#ayat.mushaf{background:radial-gradient(ellipse at center,var(--paper) 0%,var(--paper2) 100%);border:3px double var(--gold);border-radius:10px;padding:16px 14px 8px;box-shadow:inset 0 0 40px rgba(120,80,20,.14),0 2px 12px rgba(0,0,0,.08);color:var(--ink)}
+.mushaf .surah-head{text-align:center;border:2px solid var(--gold);border-radius:6px;padding:10px 40px;margin:22px 0 14px;background:color-mix(in srgb,var(--gold) 10%,transparent);position:relative}
+.mushaf .surah-head::before,.mushaf .surah-head::after{content:"❁";color:var(--gold);position:absolute;top:50%;transform:translateY(-50%);font-size:1.1rem}
+.mushaf .surah-head::before{left:12px}.mushaf .surah-head::after{right:12px}
+.mushaf .surah-head h2{font-family:Amiri,"Noto Naskh Arabic",serif;font-size:1.35rem;color:var(--ink);margin:0}
+.mushaf .surah-head .mu{color:var(--mu2)}
+.mushaf .surah-head .ar{font-size:1.6rem;line-height:2;color:var(--ink);text-align:center}
+.mushaf .ayah{background:transparent;border:none;border-bottom:1px solid color-mix(in srgb,var(--gold) 40%,transparent);border-radius:0;padding:12px 4px;margin:0;color:var(--ink);text-align:center}
+.mushaf .ayah.now{background:color-mix(in srgb,var(--gold) 16%,transparent);border-radius:8px;border-bottom-color:transparent}
+.mushaf .ayah.mem{border-bottom-color:var(--gold)}
+.mushaf .ayah .ar{font-size:1.9rem;line-height:2.4;text-align:center;color:var(--ink)}
+.mushaf .ayah .tr{color:var(--mu2);text-align:center;font-size:.95rem}
+.mushaf .ayah p{text-align:center}
+.mushaf .ayah .row{justify-content:center}
+.mushaf .ayah .mu,.mushaf .ayah .note,.mushaf .ayah .out{color:var(--mu2)}
+.mushaf .ayah .tx{text-align:left}
+.mushaf .ayah button{background:transparent;color:var(--ink);border-color:color-mix(in srgb,var(--gold) 50%,transparent)}
+.vend{color:var(--gold);font-size:1.25rem;margin:0 .15em}
+@media(max-width:480px){.mushaf .ayah .ar{font-size:1.65rem}.mushaf .surah-head .ar{font-size:1.35rem}}
 [hidden]{display:none!important}
 </style>
 </head>
 <body>
 <header>
-  <h1>🌙 Quran & Arabic Learner</h1>
+  <h1>🌙 Quran & Arabic Learner <span id="netBadge" hidden style="font-size:.7rem;background:var(--bad);color:#fff;border-radius:99px;padding:1px 8px;vertical-align:middle">Offline</span></h1>
   <nav>
     <button class="on" data-t="alpha">Alphabet</button>
     <button data-t="quran">Quran</button>
@@ -139,7 +161,7 @@ tajweed.idgham_ghunnah,tajweed.idgham_wo_ghunnah,tajweed.idgham_shafawi,tajweed.
     <p class="mu" style="font-size:.8rem;margin:6px 0 0">Colours: <span class="sw" style="background:#9a9a9a"></span>silent <span class="sw" style="background:#c7790a"></span>madd 2 <span class="sw" style="background:#d1261b"></span>madd longer <span class="sw" style="background:#2563eb"></span>qalqalah <span class="sw" style="background:#16a34a"></span>ghunnah/ikhfā’/iqlāb <span class="sw" style="background:#9333ea"></span>idghām</p>
   </div>
 
-  <div id="ayat"></div>
+  <div id="ayat" class="mushaf"></div>
   <p class="mu center" id="sentinel"></p>
   <p class="warn">Text, transliteration, translation and audio load from public Quran APIs (alquran.cloud, Quran.com). Tafsir is Ibn Kathir (abridged). Verify against a printed Mushaf and learn tajweed from a qualified teacher. “Check my voice” compares words only.</p>
 
@@ -192,6 +214,20 @@ tajweed.idgham_ghunnah,tajweed.idgham_wo_ghunnah,tajweed.idgham_shafawi,tajweed.
     <h2>Install the app</h2>
     <p class="mu">Install it like a normal app: it opens full-screen, works offline for the parts you have already loaded, and keeps your progress.</p>
     <div class="row"><button id="installBtn" class="pri" hidden>📲 Install now</button><span class="mu" id="installMsg"></span></div>
+  </div>
+  <div class="card">
+    <h2>Offline listening</h2>
+    <p class="mu" id="offStatus"></p>
+    <p class="note" id="offStore"></p>
+    <p class="note">Downloads include the Arabic text, transliteration, translation and recitation audio, so you can read and listen with no internet. Tafsir needs a connection. The whole Qur’an takes a lot of space (about 0.5 GB or more) and time. You can pause and resume at any point.</p>
+    <div class="row">
+      <button id="dlCur" class="pri">⬇ Download current surah</button>
+      <button id="dlAll">⬇ Download whole Qur’an</button>
+      <button id="dlStop" hidden>⏸ Pause</button>
+      <button id="dlDel">🗑 Delete downloads</button>
+    </div>
+    <div class="bar"><i id="dlBar" style="width:0"></i></div>
+    <p class="mu" id="offMsg"></p>
   </div>
   <div class="card">
     <h2>iPhone / iPad</h2>
@@ -402,9 +438,10 @@ function resetView() {
   updateProgress(); updateNow();
 }
 
+function toArDigits(n) { return String(n).replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]); }
 function verseHTML(v) {
   const mem = S.mem[v.k];
-  const words = v.tj ? cleanTajweed(v.tj) : v.ar.split(' ').map((w) => `<span class="w">${w}</span>`).join(' ');
+  const words = v.tj ? cleanTajweed(v.tj) : v.ar.split(' ').map((w) => `<span class="w">${w}</span>`).join(' ') + ` <span class="vend">﴿${toArDigits(v.a)}﴾</span>`;
   return `<div class="card ayah${mem ? ' mem' : ''}${v.k === curK ? ' now' : ''}" data-k="${v.k}" id="v-${v.k}">
     <div class="row" style="margin:0;justify-content:space-between"><span class="mu">${v.k}</span>
       <label class="chk"><input type="checkbox" data-a="mem" ${mem ? 'checked' : ''}> Memorised</label></div>
@@ -742,9 +779,115 @@ $('installBtn').onclick = async () => {
 };
 window.addEventListener('appinstalled', () => { $('installMsg').textContent = 'Installed ✓'; $('installBtn').hidden = true; });
 
+/* ---------- OFFLINE ---------- */
+const AUDIO_CACHE = 'qapp-audio-v1';
+let dlRunning = false, dlStop = false;
+
+function renderOffline() {
+  const done = (S.offline || []).length;
+  $('offStatus').textContent = done
+    ? done + ' of 114 surahs saved for offline listening.'
+    : 'Nothing saved yet. Download to listen without internet.';
+  $('netBadge').hidden = navigator.onLine;
+  if (navigator.storage && navigator.storage.estimate) {
+    navigator.storage.estimate().then((e) => {
+      $('offStore').textContent = 'Storage used by this app: ' + ((e.usage || 0) / 1048576).toFixed(0) + ' MB'
+        + (e.quota ? ' of about ' + (e.quota / 1073741824).toFixed(1) + ' GB available' : '');
+    }).catch(() => {});
+  }
+}
+window.addEventListener('online', renderOffline);
+window.addEventListener('offline', renderOffline);
+
+async function saveAudio(cache, url) {
+  let res;
+  try {
+    res = await fetch(url, { mode: 'cors' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+  } catch (e) {
+    res = await fetch(url, { mode: 'no-cors' }); // opaque copy still plays offline
+  }
+  await cache.put(url, res);
+}
+
+async function downloadOffline(list) {
+  if (dlRunning) return;
+  dlRunning = true; dlStop = false;
+  $('dlStop').hidden = false;
+  $('offMsg').textContent = 'Preparing…';
+  try {
+    if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+    const cache = await caches.open(AUDIO_CACHE);
+
+    // Text and translation first (the service worker saves these as they load)
+    const todo = [];
+    for (const n of list) {
+      if (dlStop) break;
+      $('offMsg').textContent = 'Saving text of surah ' + n + '…';
+      const d = await fetchSurah(n);
+      todo.push({ n, urls: d.verses.map((v) => v.url) });
+    }
+
+    const all = todo.reduce((sum, t) => sum + t.urls.length, 0);
+    let done = 0;
+    for (const t of todo) {
+      if (dlStop) break;
+      let ok = true;
+      const queue = t.urls.slice();
+      const worker = async () => {
+        while (queue.length && !dlStop) {
+          const url = queue.shift();
+          try {
+            if (!(await cache.match(url))) await saveAudio(cache, url);
+          } catch (e) {
+            ok = false;
+            if (e && e.name === 'QuotaExceededError') { dlStop = true; $('offMsg').textContent = 'Not enough storage on this device. Free some space and try again.'; }
+          }
+          done++;
+          $('dlBar').style.width = (done / all * 100).toFixed(1) + '%';
+          if (!dlStop) $('offMsg').textContent = 'Surah ' + t.n + ' · ' + done + ' of ' + all + ' recitations saved';
+        }
+      };
+      await Promise.all([worker(), worker(), worker(), worker()]);
+      if (ok && !dlStop) {
+        S.offline = [...new Set([...(S.offline || []), t.n])];
+        save(); renderOffline();
+      }
+    }
+    if (dlStop) {
+      if (!$('offMsg').textContent.startsWith('Not enough')) $('offMsg').textContent = 'Paused. Press download again to continue; saved parts are kept.';
+    } else {
+      $('offMsg').textContent = 'Done ✓ Saved for offline listening.';
+    }
+  } catch (e) {
+    $('offMsg').textContent = 'Download stopped: ' + (navigator.onLine ? 'a connection error occurred.' : 'you are offline.') + ' Try again when online.';
+  } finally {
+    dlRunning = false; dlStop = false;
+    $('dlStop').hidden = true;
+    renderOffline();
+  }
+}
+
+$('dlCur').onclick = () => downloadOffline([S.lastSurah || 1]);
+$('dlAll').onclick = () => {
+  const all = []; for (let n = 1; n <= 114; n++) all.push(n);
+  downloadOffline(all);
+};
+$('dlStop').onclick = () => { dlStop = true; $('offMsg').textContent = 'Pausing…'; };
+$('dlDel').onclick = async () => {
+  if (!confirm('Delete all downloaded recitations from this device?')) return;
+  dlStop = true;
+  await caches.delete(AUDIO_CACHE);
+  S.offline = []; save();
+  $('dlBar').style.width = '0';
+  $('offMsg').textContent = 'Downloads deleted.';
+  renderOffline();
+};
+
 /* ---------- START ---------- */
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 updateKbBtn();
+renderOffline();
 $('mode').value = S.mode;
 function populateSurahs(list) {
   $('sel').innerHTML = list.map((s) => `<option value="${s.number}">${s.number}. ${s.englishName} · ${s.englishNameTranslation} (${s.numberOfAyahs})</option>`).join('');
