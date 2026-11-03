@@ -70,6 +70,9 @@ tajweed.madda_permissible,tajweed.madda_necessary,tajweed.madda_obligatory{color
 tajweed.qalaqah{color:#2563eb}
 tajweed.ghunnah,tajweed.ikhfa,tajweed.ikhfa_shafawi,tajweed.iqlab{color:#16a34a}
 tajweed.idgham_ghunnah,tajweed.idgham_wo_ghunnah,tajweed.idgham_shafawi,tajweed.idgham_mutajanisayn,tajweed.idgham_mutaqaribayn{color:#9333ea}
+#sres{max-height:300px;overflow:auto;padding:6px}
+#sres button{display:block;width:100%;text-align:left;margin:3px 0;border:none;background:var(--ac2);color:var(--tx)}
+#sres .none{padding:8px;color:var(--mu);font-size:.9rem}
 /* ===== Mushaf look: printed Qur'an page ===== */
 :root{--paper:#f6eed8;--paper2:#ece0bd;--ink:#2a1c0c;--gold:#a8832f;--mu2:#7a6a4e}
 @media(prefers-color-scheme:dark){:root{--paper:#2b2517;--paper2:#221d12;--ink:#f1e7c8;--gold:#d4b064;--mu2:#b9a77f}}
@@ -144,6 +147,10 @@ tajweed.idgham_ghunnah,tajweed.idgham_wo_ghunnah,tajweed.idgham_shafawi,tajweed.
         <option value="full">Full Quran (continuous)</option>
       </select>
     </div>
+    <div class="row">
+      <input id="sq" type="search" placeholder="Search a surah: name, meaning, Arabic or number" autocomplete="off" aria-label="Search surah" style="flex:1;min-width:0">
+    </div>
+    <div id="sres" class="card" hidden></div>
     <div class="row">
       <label class="mu" for="sel">Start at</label>
       <select id="sel" aria-label="Surah" style="flex:1;min-width:0"><option>Loading…</option></select>
@@ -884,6 +891,46 @@ $('dlDel').onclick = async () => {
   renderOffline();
 };
 
+/* ---------- SURAH SEARCH ---------- */
+function lowerClean(x) { return (x || '').toLowerCase().replace(/^al-?/, '').replace(/[^a-z0-9]/g, ''); }
+function findSurahs(q) {
+  if (!surahs || !q.trim()) return [];
+  const raw = q.trim(), qn = lowerClean(raw), an = norm(raw);
+  const num = /^\d+$/.test(raw) ? +raw : null;
+  const exact = [], fuzzy = [];
+  surahs.forEach((s) => {
+    const en = lowerClean(s.englishName);
+    const tr = (s.englishNameTranslation || '').toLowerCase();
+    if (num !== null && s.number === num) exact.push(s);
+    else if (qn && (en.includes(qn) || (raw.length >= 3 && tr.includes(raw.toLowerCase())))) exact.push(s);
+    else if (an && s.name && norm(s.name).includes(an)) exact.push(s);
+    else if (qn.length >= 3 && sim(en, qn) >= 0.6) fuzzy.push({ s, score: sim(en, qn) });
+  });
+  fuzzy.sort((a, b) => b.score - a.score);
+  return exact.concat(fuzzy.map((x) => x.s)).slice(0, 12);
+}
+function renderSurahResults() {
+  const box = $('sres');
+  const q = $('sq').value;
+  if (!q.trim()) { box.hidden = true; box.innerHTML = ''; return; }
+  const list = findSurahs(q);
+  box.hidden = false;
+  box.innerHTML = list.length
+    ? list.map((s) => `<button data-n="${s.number}">${s.number}. ${s.name || ''} · ${s.englishName} — ${s.englishNameTranslation} (${s.numberOfAyahs} verses)</button>`).join('')
+    : '<p class="none">No surah found. Try the number (1–114) or the English meaning, such as “merciful” or “cow”.</p>';
+}
+function openSurah(n) {
+  $('sq').value = ''; $('sres').hidden = true; $('sres').innerHTML = '';
+  stop(); pi = -1; curK = null;
+  startView(n);
+}
+$('sq').addEventListener('input', renderSurahResults);
+$('sq').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { const first = findSurahs($('sq').value)[0]; if (first) openSurah(first.number); }
+  if (e.key === 'Escape') { $('sq').value = ''; renderSurahResults(); }
+});
+$('sres').onclick = (e) => { const b = e.target.closest('button[data-n]'); if (b) openSurah(+b.dataset.n); };
+
 /* ---------- START ---------- */
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 updateKbBtn();
@@ -893,8 +940,8 @@ function populateSurahs(list) {
   $('sel').innerHTML = list.map((s) => `<option value="${s.number}">${s.number}. ${s.englishName} · ${s.englishNameTranslation} (${s.numberOfAyahs})</option>`).join('');
 }
 function initSurahs() {
-  const ready = surahs ? Promise.resolve(surahs) : fetch('https://api.alquran.cloud/v1/surah').then((r) => r.json()).then((r) => {
-    surahs = r.data.map((s) => ({ number: s.number, englishName: s.englishName, englishNameTranslation: s.englishNameTranslation, numberOfAyahs: s.numberOfAyahs }));
+  const ready = (surahs && surahs[0] && surahs[0].name) ? Promise.resolve(surahs) : fetch('https://api.alquran.cloud/v1/surah').then((r) => r.json()).then((r) => {
+    surahs = r.data.map((s) => ({ number: s.number, name: s.name, englishName: s.englishName, englishNameTranslation: s.englishNameTranslation, numberOfAyahs: s.numberOfAyahs }));
     localStorage.setItem('qapp.surahs', JSON.stringify(surahs));
     return surahs;
   });
