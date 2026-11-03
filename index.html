@@ -173,5 +173,974 @@
       font-size: 0.75rem;
       font-weight: 600;
       background: var(--gold-light);
+      color: #8a6d00;
+    }
 
-... 
+    .rule-grid {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    @media (min-width: 600px) {
+      .rule-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .rule-card {
+      background: var(--primary-light);
+      border-radius: 12px;
+      padding: 1rem 1.15rem;
+      border-left: 4px solid var(--primary);
+    }
+
+    .rule-card strong {
+      display: block;
+      color: var(--primary-dark);
+      margin-bottom: 0.35rem;
+    }
+
+    .rule-card .example {
+      font-family: 'Amiri', serif;
+      font-size: 1.35rem;
+      direction: rtl;
+      margin: 0.4rem 0;
+      color: var(--text);
+    }
+
+    .ayah-card {
+      text-align: center;
+      padding: 1.75rem 1.25rem;
+    }
+
+    .ayah-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .transliteration {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      margin: 0.75rem 0;
+      font-style: italic;
+      letter-spacing: 0.02em;
+    }
+
+    .translation {
+      font-size: 1.05rem;
+      color: var(--text);
+      margin: 0.75rem 0;
+      padding: 0.85rem;
+      background: #f7f5f0;
+      border-radius: 10px;
+      text-align: left;
+    }
+
+    .explanation {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+      text-align: left;
+      border-top: 1px dashed var(--border);
+      padding-top: 0.75rem;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      justify-content: center;
+      margin-top: 1.25rem;
+    }
+
+    button.btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.65rem 1.2rem;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover { background: var(--primary-dark); }
+
+    .btn-secondary {
+      background: var(--gold-light);
+      color: #7a5c00;
+    }
+    .btn-secondary:hover { background: var(--gold); color: white; }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+    }
+    .btn-outline:hover { background: var(--primary-light); }
+
+    .btn-danger {
+      background: #ffebee;
+      color: var(--danger);
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    select, .select-wrap {
+      padding: 0.6rem 1rem;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: white;
+      font-size: 0.95rem;
+      min-width: 180px;
+    }
+
+    .surah-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .voice-panel {
+      background: linear-gradient(135deg, #f0f9f5 0%, #e8f5f0 100%);
+      border: 2px dashed var(--primary);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    .voice-panel h3 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .mic-btn {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: none;
+      background: var(--primary);
+      color: white;
+      font-size: 1.8rem;
+      cursor: pointer;
+      margin: 1rem 0;
+      box-shadow: 0 6px 20px rgba(13,107,76,0.35);
+      transition: all 0.2s;
+    }
+
+    .mic-btn.listening {
+      background: var(--danger);
+      animation: pulse 1.2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    .voice-status {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      min-height: 1.4em;
+    }
+
+    .voice-result {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: white;
+      border-radius: 12px;
+      text-align: left;
+      display: none;
+    }
+
+    .voice-result.show { display: block; }
+
+    .feedback-good { color: var(--success); font-weight: 600; }
+    .feedback-improve { color: var(--warning); font-weight: 600; }
+
+    .progress-bar {
+      height: 8px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 0.75rem 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    .tips {
+      background: var(--gold-light);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-top: 1rem;
+      font-size: 0.92rem;
+    }
+
+    .tips strong { color: #7a5c00; }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .makharij-list {
+      display: grid;
+      gap: 0.6rem;
+      margin-top: 0.75rem;
+    }
+
+    .makharij-item {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      padding: 0.6rem 0.8rem;
+      background: #f7f5f0;
+      border-radius: 8px;
+    }
+
+    .makharij-item .letter {
+      font-family: 'Amiri', serif;
+      font-size: 1.5rem;
+      min-width: 2.5rem;
+      text-align: center;
+      color: var(--primary);
+    }
+
+    .source-note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 1rem;
+      font-style: italic;
+    }
+
+    .ayah-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .tajweed-highlight {
+      background: linear-gradient(transparent 60%, #ffe082 60%);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📖 Quran with Tajweed</h1>
+    <p>Learn • Understand • Recite correctly — for beginners</p>
+    <div class="bismillah">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
+  </header>
+
+  <nav id="mainNav">
+    <button class="active" data-section="tajweed">What is Tajweed?</button>
+    <button data-section="rules">Basic Rules</button>
+    <button data-section="learn">Learn Surah</button>
+    <button data-section="practice">Voice Practice</button>
+    <button data-section="memorize">Memorize</button>
+  </nav>
+
+  <main>
+    <!-- SECTION: What is Tajweed -->
+    <section id="tajweed" class="section active">
+      <div class="card">
+        <h2>🌟 What is Tajweed?</h2>
+        <p><strong>Tajweed</strong> (تجويد) comes from the Arabic root <em>j-w-d</em> meaning “to make excellent” or “to improve”.</p>
+        <p style="margin-top:0.75rem">In the science of Quranic recitation, <strong>Tajweed means giving every letter its right (ḥaqq) and its due (mustaḥaqq)</strong> — pronouncing each letter from its correct articulation point (makhraj) with its proper characteristics (ṣifāt), and applying the rules that arise when letters meet.</p>
+        
+        <h3>Why does it matter?</h3>
+        <p>Allah commands in the Quran:</p>
+        <p class="arabic" style="text-align:center; margin:0.75rem 0">وَرَتِّلِ ٱلْقُرْءَانَ تَرْتِيلًا</p>
+        <p class="transliteration" style="text-align:center">“And recite the Quran with measured recitation (tartīl).” — Surah Al-Muzzammil 73:4</p>
+        <p>The Prophet ﷺ recited the Quran exactly as it was revealed by Jibrīl (peace be upon him). Tajweed preserves that exact way of recitation so the meaning is not changed by incorrect pronunciation.</p>
+
+        <h3>Levels of obligation</h3>
+        <ul style="margin:0.5rem 0 0 1.25rem">
+          <li><strong>Fard ʿayn (individual obligation):</strong> Avoiding clear mistakes (lahn jalī) that change the meaning.</li>
+          <li><strong>Recommended:</strong> Mastering finer details of elongation, nasalization, etc.</li>
+        </ul>
+
+        <div class="tips">
+          <strong>For stage / beginner students:</strong> Start with correct letter sounds and the most common rules (Noon Sākinah, Madd, Qalqalah). Practice short surahs every day. Listening to a skilled reciter and repeating after them is the traditional and most effective method (talaqqī).
+        </div>
+
+        <p class="source-note">Sources: Classical definition of Ibn al-Jazarī; Quran 73:4; standard works such as Tuhfat al-Atfāl and explanations from SeekersGuidance and established Tajweed scholars.</p>
+      </div>
+
+      <div class="card">
+        <h2>🎯 Goals of this App</h2>
+        <ul style="margin-left:1.25rem">
+          <li>Understand what Tajweed is and why it is important</li>
+          <li>Learn the foundational rules with clear examples</li>
+          <li>Read short surahs with Arabic + transliteration + translation + simple explanation</li>
+          <li>Listen to authentic recitation (Mishary Rashid Alafasy and others via free APIs)</li>
+          <li>Practice your own voice and compare (browser speech recognition — best used as a helper, not a final judge)</li>
+          <li>Build confidence for memorization (ḥifẓ) with correct pronunciation from the start</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SECTION: Basic Rules -->
+    <section id="rules" class="section">
+      <div class="card">
+        <h2>📚 Foundational Tajweed Rules for Beginners</h2>
+        <p>Focus on these first. Master one group before moving to the next.</p>
+      </div>
+
+      <div class="card">
+        <h2>1. Makhārij al-Ḥurūf — Places of Articulation</h2>
+        <p>Every Arabic letter has a precise exit point. The five main areas are:</p>
+        <div class="makharij-list">
+          <div class="makharij-item">
+            <span class="letter">ء هـ ع ح غ خ</span>
+            <div><strong>Throat (Ḥalq)</strong><br>Deep, middle and upper throat letters. English speakers often need extra practice here.</div>
+          </div>
+          <div class="makharij-item">
+            <span class="letter">ق ك ج ش ي ض ل ن ر</span>
+            <div><strong>Tongue (Lisān)</strong><br>The largest group. Pay special attention to ض, ظ, ص, ق.</div>
+          </div>
+          <div class="makharij-item">
+            <span class="letter">ف ب م و</span>
+            <div><strong>Lips (Shafatān)</strong></div>
+          </div>
+          <div class="makharij-item">
+            <span class="letter">غُنَّة</span>
+            <div><strong>Nasal passage (Khayshūm)</strong><br>Home of the nasal sound (ghunnah) on ن and م.</div>
+          </div>
+          <div class="makharij-item">
+            <span class="letter">ا و ي</span>
+            <div><strong>Empty space of the mouth (Jawf)</strong><br>The three long vowels (madd letters).</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>2. Rules of Noon Sākinah & Tanwīn</h2>
+        <p>When نْ or a tanwīn (ً ٍ ٌ) is followed by another letter, one of four rules applies:</p>
+        <div class="rule-grid">
+          <div class="rule-card">
+            <strong>Iẓhār (Clear)</strong>
+            Before the 6 throat letters: ء هـ ع ح غ خ
+            <div class="example">مِنْ عِلْمٍ</div>
+            Pronounce the ن clearly, no nasalization.
+          </div>
+          <div class="rule-card">
+            <strong>Idghām (Merging)</strong>
+            Before ي ر م ل و ن (Yarmalūn)
+            <div class="example">مِن رَّبِّهِمْ</div>
+            Merge with or without ghunnah depending on the letter.
+          </div>
+          <div class="rule-card">
+            <strong>Iqlāb (Conversion)</strong>
+            Before ب only
+            <div class="example">مِنۢ بَعْدِ</div>
+            Change the ن sound into a light م with ghunnah.
+          </div>
+          <div class="rule-card">
+            <strong>Ikhfāʾ (Hiding)</strong>
+            Before the remaining 15 letters
+            <div class="example">مِن شَرِّ</div>
+            Hide the ن slightly with a light nasal sound.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>3. Other Essential Beginner Rules</h2>
+        <div class="rule-grid">
+          <div class="rule-card">
+            <strong>Qalqalah</strong>
+            Echoing sound on ق ط ب ج د when they have sukūn or at a stop.
+            <div class="example">أَحَدٌ  •  ٱلصَّمَدُ</div>
+          </div>
+          <div class="rule-card">
+            <strong>Madd (Elongation)</strong>
+            Natural madd (madd ṭabīʿī) = 2 counts on ا و ي.
+            <div class="example">قَالَ  •  يَقُولُ  •  قِيلَ</div>
+          </div>
+          <div class="rule-card">
+            <strong>Ghunnah</strong>
+            Nasal sound held for 2 counts on نّ and مّ (shaddah).
+            <div class="example">إِنَّ  •  ثُمَّ</div>
+          </div>
+          <div class="rule-card">
+            <strong>Heavy vs Light Letters</strong>
+            Heavy (tafkhīm): خ ص ض غ ط ق ظ<br>
+            The lām in “Allāh” is heavy after fatḥah/ḍammah and light after kasrah.
+          </div>
+        </div>
+        <div class="tips" style="margin-top:1.25rem">
+          <strong>Practice tip:</strong> Read Al-Fātiḥah slowly every day while applying these rules. Record yourself and compare with a clear reciter such as Sheikh Al-Husary or Mishary Alafasy.
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: Learn Surah -->
+    <section id="learn" class="section">
+      <div class="card">
+        <h2>📖 Learn a Short Surah</h2>
+        <div class="surah-selector">
+          <label for="surahSelect"><strong>Choose Surah:</strong></label>
+          <select id="surahSelect">
+            <option value="1">1. Al-Fātiḥah (The Opening)</option>
+            <option value="112">112. Al-Ikhlāṣ (The Sincerity)</option>
+            <option value="113">113. Al-Falaq (The Daybreak)</option>
+            <option value="114">114. An-Nās (Mankind)</option>
+            <option value="108">108. Al-Kawthar</option>
+            <option value="103">103. Al-ʿAṣr</option>
+            <option value="110">110. An-Naṣr</option>
+            <option value="105">105. Al-Fīl</option>
+          </select>
+          <button class="btn btn-primary" id="loadSurahBtn">Load Surah</button>
+        </div>
+        <div id="surahMeta" style="margin-top:0.5rem;color:var(--text-muted);font-size:0.9rem"></div>
+      </div>
+
+      <div id="ayahContainer" class="ayah-list">
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Select a surah and click Load to begin.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: Voice Practice -->
+    <section id="practice" class="section">
+      <div class="card">
+        <h2>🎤 Voice Practice & Correction Helper</h2>
+        <p>This tool uses your browser’s speech recognition. It is a <strong>helper only</strong> — real Tajweed correction requires listening carefully to a qualified teacher (talaqqī). Arabic recognition quality varies by device and accent.</p>
+
+        <div class="voice-panel">
+          <h3>Practice a short phrase</h3>
+          <p id="practicePhrase" class="arabic arabic-lg" style="margin:0.75rem 0">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</p>
+          <p class="transliteration" id="practiceTranslit">Bismillāhi r-raḥmāni r-raḥīm</p>
+          <p class="translation" id="practiceTranslation" style="text-align:center;margin:0.5rem auto;max-width:400px">In the name of Allah, the Most Gracious, the Most Merciful</p>
+
+          <div class="controls">
+            <button class="btn btn-secondary" id="playCorrectBtn">▶ Play Correct Recitation</button>
+            <select id="practiceSelect" style="min-width:160px">
+              <option value="bismillah">Bismillah</option>
+              <option value="fatiha1">Al-Fātiḥah 1</option>
+              <option value="ikhlas1">Al-Ikhlāṣ 1</option>
+              <option value="nas1">An-Nās 1</option>
+            </select>
+          </div>
+
+          <button class="mic-btn" id="micBtn" title="Hold or click to speak">🎙️</button>
+          <p class="voice-status" id="voiceStatus">Click the microphone and recite the phrase clearly</p>
+
+          <div class="voice-result" id="voiceResult">
+            <p><strong>You said:</strong> <span id="recognizedText">—</span></p>
+            <p id="feedbackText"></p>
+            <div class="progress-bar"><div class="progress-fill" id="matchBar"></div></div>
+            <p style="font-size:0.85rem;color:var(--text-muted)">Similarity is approximate. Focus on listening and repeating the correct audio.</p>
+          </div>
+        </div>
+
+        <div class="tips">
+          <strong>How to use for improvement:</strong><br>
+          1. Listen to the correct recitation several times.<br>
+          2. Recite slowly, focusing on one rule at a time (e.g., the ghunnah or qalqalah).<br>
+          3. Use the microphone for rough feedback.<br>
+          4. Best results come from a live teacher who can hear your makhārij.
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: Memorize -->
+    <section id="memorize" class="section">
+      <div class="card">
+        <h2>🧠 Memorization Helper</h2>
+        <p>Beginners should memorize with correct Tajweed from day one. Use short, frequent sessions.</p>
+
+        <h3>Recommended order for beginners</h3>
+        <ol style="margin:0.5rem 0 1rem 1.25rem">
+          <li>Al-Fātiḥah (essential for every prayer)</li>
+          <li>Al-Ikhlāṣ, Al-Falaq, An-Nās (the three Quls)</li>
+          <li>Al-Kawthar, Al-ʿAṣr, An-Naṣr, Al-Fīl and other short surahs of Juz ʿAmma</li>
+        </ol>
+
+        <h3>Simple daily method</h3>
+        <ul style="margin-left:1.25rem">
+          <li>Listen to one ayah 5–7 times</li>
+          <li>Repeat after the reciter 5 times</li>
+          <li>Recite from memory 3 times</li>
+          <li>Connect to the previous ayah</li>
+          <li>Review previous material before adding new</li>
+        </ul>
+
+        <div class="controls" style="margin-top:1.25rem">
+          <button class="btn btn-primary" id="startMemorizeBtn">Start Guided Session (Al-Fātiḥah)</button>
+        </div>
+      </div>
+
+      <div class="card" id="memoCard" style="display:none">
+        <div id="memoContent"></div>
+        <div class="controls" style="margin-top:1rem">
+          <button class="btn btn-secondary" id="memoPrev">◀ Previous</button>
+          <button class="btn btn-primary" id="memoPlay">▶ Play</button>
+          <button class="btn btn-outline" id="memoNext">Next ▶</button>
+        </div>
+        <div class="progress-bar" style="margin-top:1rem"><div class="progress-fill" id="memoProgress"></div></div>
+        <p id="memoStatus" style="text-align:center;font-size:0.9rem;color:var(--text-muted)"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Built for beginners seeking to recite the Quran as it was revealed.</p>
+    <p>Data & audio via free public Quran APIs (alquran.cloud / Islamic Network). Always verify with a qualified teacher.</p>
+    <p style="margin-top:0.5rem">May Allah accept and make it easy. Āmīn.</p>
+  </footer>
+
+  <audio id="audioPlayer" preload="none"></audio>
+
+  <script>
+    // ========== NAVIGATION ==========
+    const navButtons = document.querySelectorAll('#mainNav button');
+    const sections = document.querySelectorAll('.section');
+
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        navButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const target = btn.dataset.section;
+        sections.forEach(s => s.classList.remove('active'));
+        document.getElementById(target).classList.add('active');
+      });
+    });
+
+    // ========== SURAH DATA (fallback + explanations) ==========
+    const SURAH_INFO = {
+      1: {
+        name: "Al-Fātiḥah",
+        meaning: "The Opening",
+        ayahs: 7,
+        type: "Meccan",
+        explanation: "The greatest surah. It is recited in every unit of prayer. It teaches praise of Allah, seeking guidance, and distinguishing the path of those who receive His favor from those who go astray."
+      },
+      112: {
+        name: "Al-Ikhlāṣ",
+        meaning: "The Sincerity / Pure Faith",
+        ayahs: 4,
+        type: "Meccan",
+        explanation: "A pure declaration of Tawḥīd (Oneness of Allah). Equivalent in reward to one-third of the Quran according to authentic hadith. Essential for every Muslim."
+      },
+      113: {
+        name: "Al-Falaq",
+        meaning: "The Daybreak",
+        ayahs: 5,
+        type: "Meccan",
+        explanation: "A protection surah. Seeks refuge in the Lord of the daybreak from the evil of creation, darkness, those who blow on knots (magic), and the envious."
+      },
+      114: {
+        name: "An-Nās",
+        meaning: "Mankind",
+        ayahs: 6,
+        type: "Meccan",
+        explanation: "The final surah. Seeks protection in the Lord, King and God of mankind from the whisperings of the retreating whisperer (Shayṭān) who whispers into the hearts of people."
+      },
+      108: {
+        name: "Al-Kawthar",
+        meaning: "The Abundance",
+        ayahs: 3,
+        type: "Meccan",
+        explanation: "Consoles the Prophet ﷺ. Allah has given him abundant good (including the river of Al-Kawthar in Paradise). Command to pray and sacrifice, and the one who hates him is cut off."
+      },
+      103: {
+        name: "Al-ʿAṣr",
+        meaning: "The Time / Declining Day",
+        ayahs: 3,
+        type: "Meccan",
+        explanation: "By time, mankind is in loss except those who believe, do righteous deeds, and encourage one another to truth and patience. A complete formula for success."
+      },
+      110: {
+        name: "An-Naṣr",
+        meaning: "The Help / Victory",
+        ayahs: 3,
+        type: "Medinan",
+        explanation: "Announces the coming victory and the entry of people into Islam in crowds. Instructs the Prophet ﷺ to glorify and seek forgiveness of his Lord."
+      },
+      105: {
+        name: "Al-Fīl",
+        meaning: "The Elephant",
+        ayahs: 5,
+        type: "Meccan",
+        explanation: "Reminds of Allah’s protection of the Kaʿbah when the army of the elephant (Abraha) tried to destroy it. Allah sent birds that pelted them with stones of baked clay."
+      }
+    };
+
+    // Simple transliteration helpers and static content for practice
+    const PRACTICE_PHRASES = {
+      bismillah: {
+        arabic: "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
+        translit: "Bismillāhi r-raḥmāni r-raḥīm",
+        translation: "In the name of Allah, the Most Gracious, the Most Merciful",
+        audioRef: "1:1"
+      },
+      fatiha1: {
+        arabic: "ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَٰلَمِينَ",
+        translit: "Al-ḥamdu lillāhi rabbi l-ʿālamīn",
+        translation: "All praise is for Allah — Lord of all worlds",
+        audioRef: "1:2"
+      },
+      ikhlas1: {
+        arabic: "قُلْ هُوَ ٱللَّهُ أَحَدٌ",
+        translit: "Qul huwa Allāhu aḥad",
+        translation: "Say: He is Allah, the One",
+        audioRef: "112:1"
+      },
+      nas1: {
+        arabic: "قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ",
+        translit: "Qul aʿūdhu bi-rabbi n-nās",
+        translation: "Say: I seek refuge in the Lord of mankind",
+        audioRef: "114:1"
+      }
+    };
+
+    // ========== API HELPERS ==========
+    const API_BASE = "https://api.alquran.cloud/v1";
+
+    async function fetchSurah(surahNum) {
+      // Arabic Uthmani + English translation (Sahih International) + audio
+      const [arabicRes, transRes, audioRes] = await Promise.all([
+        fetch(`${API_BASE}/surah/${surahNum}/quran-uthmani`),
+        fetch(`${API_BASE}/surah/${surahNum}/en.sahih`),
+        fetch(`${API_BASE}/surah/${surahNum}/ar.alafasy`)
+      ]);
+
+      if (!arabicRes.ok || !transRes.ok) throw new Error("Failed to load surah data");
+
+      const arabicData = await arabicRes.json();
+      const transData = await transRes.json();
+      let audioData = null;
+      try {
+        if (audioRes.ok) audioData = await audioRes.json();
+      } catch (e) {}
+
+      return {
+        arabic: arabicData.data,
+        translation: transData.data,
+        audio: audioData ? audioData.data : null
+      };
+    }
+
+    // Simple romanization approximation for display (not perfect scholarly transliteration)
+    function simpleTransliterate(arabicText) {
+      // This is a very basic fallback. Real apps use proper transliteration editions.
+      // We rely mostly on known short surahs and encourage listening.
+      return arabicText; // Will be replaced by better data when available
+    }
+
+    // ========== LOAD SURAH ==========
+    const surahSelect = document.getElementById('surahSelect');
+    const loadSurahBtn = document.getElementById('loadSurahBtn');
+    const ayahContainer = document.getElementById('ayahContainer');
+    const surahMeta = document.getElementById('surahMeta');
+    const audioPlayer = document.getElementById('audioPlayer');
+
+    loadSurahBtn.addEventListener('click', async () => {
+      const num = surahSelect.value;
+      ayahContainer.innerHTML = `<div class="loading"><div class="spinner"></div><p>Loading Surah from authentic sources...</p></div>`;
+      surahMeta.textContent = "";
+
+      try {
+        const data = await fetchSurah(num);
+        const info = SURAH_INFO[num] || {};
+        surahMeta.innerHTML = `<strong>${info.name || data.arabic.englishName}</strong> — ${info.meaning || data.arabic.englishNameTranslation} · ${info.ayahs || data.arabic.numberOfAyahs} ayahs · ${info.type || data.arabic.revelationType}`;
+
+        let html = "";
+        if (info.explanation) {
+          html += `<div class="card"><h2>Simple Explanation</h2><p>${info.explanation}</p></div>`;
+        }
+
+        const ayahs = data.arabic.ayahs;
+        const translations = data.translation.ayahs;
+        const audioAyahs = data.audio ? data.audio.ayahs : [];
+
+        ayahs.forEach((ayah, i) => {
+          const trans = translations[i] ? translations[i].text : "";
+          const audioUrl = audioAyahs[i] ? audioAyahs[i].audio : null;
+          const numberInSurah = ayah.numberInSurah;
+
+          html += `
+            <div class="card ayah-card">
+              <div class="ayah-number">${numberInSurah}</div>
+              <div class="arabic arabic-lg">${ayah.text}</div>
+              <div class="translation">${trans}</div>
+              <div class="controls">
+                ${audioUrl ? `<button class="btn btn-primary play-ayah" data-src="${audioUrl}">▶ Play Recitation</button>` : ""}
+                <button class="btn btn-outline copy-ayah" data-text="${ayah.text}">Copy Arabic</button>
+              </div>
+            </div>
+          `;
+        });
+
+        ayahContainer.innerHTML = html;
+
+        // Attach play listeners
+        document.querySelectorAll('.play-ayah').forEach(btn => {
+          btn.addEventListener('click', () => {
+            audioPlayer.src = btn.dataset.src;
+            audioPlayer.play();
+          });
+        });
+
+        document.querySelectorAll('.copy-ayah').forEach(btn => {
+          btn.addEventListener('click', () => {
+            navigator.clipboard.writeText(btn.dataset.text).then(() => {
+              btn.textContent = "Copied!";
+              setTimeout(() => btn.textContent = "Copy Arabic", 1500);
+            });
+          });
+        });
+
+      } catch (err) {
+        console.error(err);
+        ayahContainer.innerHTML = `<div class="card"><p style="color:var(--danger)">Could not load data. Please check your internet connection. The app uses the free alquran.cloud API.</p>
+          <p style="margin-top:0.75rem">You can still study the Tajweed rules and practice with the built-in phrases.</p></div>`;
+      }
+    });
+
+    // ========== VOICE PRACTICE ==========
+    const micBtn = document.getElementById('micBtn');
+    const voiceStatus = document.getElementById('voiceStatus');
+    const voiceResult = document.getElementById('voiceResult');
+    const recognizedText = document.getElementById('recognizedText');
+    const feedbackText = document.getElementById('feedbackText');
+    const matchBar = document.getElementById('matchBar');
+    const practiceSelect = document.getElementById('practiceSelect');
+    const practicePhrase = document.getElementById('practicePhrase');
+    const practiceTranslit = document.getElementById('practiceTranslit');
+    const practiceTranslation = document.getElementById('practiceTranslation');
+    const playCorrectBtn = document.getElementById('playCorrectBtn');
+
+    let recognition = null;
+    let isListening = false;
+
+    // Load practice phrase
+    function setPracticePhrase(key) {
+      const p = PRACTICE_PHRASES[key];
+      if (!p) return;
+      practicePhrase.textContent = p.arabic;
+      practiceTranslit.textContent = p.translit;
+      practiceTranslation.textContent = p.translation;
+    }
+    practiceSelect.addEventListener('change', () => setPracticePhrase(practiceSelect.value));
+    setPracticePhrase('bismillah');
+
+    // Play correct audio for practice phrase
+    playCorrectBtn.addEventListener('click', async () => {
+      const key = practiceSelect.value;
+      const p = PRACTICE_PHRASES[key];
+      if (!p) return;
+      playCorrectBtn.disabled = true;
+      playCorrectBtn.textContent = "Loading...";
+      try {
+        // Fetch single ayah audio
+        const [s, a] = p.audioRef.split(':');
+        const res = await fetch(`${API_BASE}/ayah/${s}:${a}/ar.alafasy`);
+        const json = await res.json();
+        if (json.data && json.data.audio) {
+          audioPlayer.src = json.data.audio;
+          audioPlayer.play();
+        } else {
+          // Fallback known CDN pattern used by many apps
+          audioPlayer.src = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${p.audioRef.replace(':','')}.mp3`;
+          audioPlayer.play();
+        }
+      } catch (e) {
+        alert("Could not load audio. Check connection.");
+      }
+      playCorrectBtn.disabled = false;
+      playCorrectBtn.textContent = "▶ Play Correct Recitation";
+    });
+
+    // Speech recognition setup
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.lang = 'ar-SA'; // Arabic (Saudi Arabia)
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 3;
+      recognition.continuous = false;
+
+      recognition.onstart = () => {
+        isListening = true;
+        micBtn.classList.add('listening');
+        voiceStatus.textContent = "Listening... Recite now";
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        recognizedText.textContent = transcript;
+        voiceResult.classList.add('show');
+
+        // Very rough similarity (character overlap after normalizing)
+        const target = PRACTICE_PHRASES[practiceSelect.value].arabic.replace(/[\u064B-\u065F\u0670]/g, '');
+        const said = transcript.replace(/[\u064B-\u065F\u0670]/g, '');
+        const score = roughSimilarity(target, said);
+        matchBar.style.width = Math.min(100, Math.round(score * 100)) + '%';
+
+        if (score > 0.65) {
+          feedbackText.innerHTML = `<span class="feedback-good">Good effort! Keep listening to the correct audio and refining your makhārij.</span>`;
+        } else {
+          feedbackText.innerHTML = `<span class="feedback-improve">Keep practicing. Listen carefully to the correct recitation and try again slowly.</span>`;
+        }
+      };
+
+      recognition.onerror = (event) => {
+        voiceStatus.textContent = "Error: " + event.error + ". Try again or check microphone permission.";
+        isListening = false;
+        micBtn.classList.remove('listening');
+      };
+
+      recognition.onend = () => {
+        isListening = false;
+        micBtn.classList.remove('listening');
+        if (voiceStatus.textContent.includes("Listening")) {
+          voiceStatus.textContent = "Click the microphone and recite the phrase clearly";
+        }
+      };
+
+      micBtn.addEventListener('click', () => {
+        if (isListening) {
+          recognition.stop();
+          return;
+        }
+        voiceResult.classList.remove('show');
+        try {
+          recognition.start();
+        } catch (e) {
+          voiceStatus.textContent = "Could not start recognition. Allow microphone access.";
+        }
+      });
+    } else {
+      micBtn.disabled = true;
+      voiceStatus.textContent = "Speech recognition is not supported in this browser. Use Chrome or Edge for the voice helper.";
+    }
+
+    function roughSimilarity(a, b) {
+      if (!a || !b) return 0;
+      const longer = a.length > b.length ? a : b;
+      const shorter = a.length > b.length ? b : a;
+      if (longer.length === 0) return 1;
+      // Simple inclusion ratio
+      let matches = 0;
+      for (let char of shorter) {
+        if (longer.includes(char)) matches++;
+      }
+      return matches / longer.length;
+    }
+
+    // ========== MEMORIZATION ==========
+    const startMemorizeBtn = document.getElementById('startMemorizeBtn');
+    const memoCard = document.getElementById('memoCard');
+    const memoContent = document.getElementById('memoContent');
+    const memoPrev = document.getElementById('memoPrev');
+    const memoNext = document.getElementById('memoNext');
+    const memoPlay = document.getElementById('memoPlay');
+    const memoProgress = document.getElementById('memoProgress');
+    const memoStatus = document.getElementById('memoStatus');
+
+    let memoAyahs = [];
+    let memoIndex = 0;
+
+    startMemorizeBtn.addEventListener('click', async () => {
+      startMemorizeBtn.disabled = true;
+      startMemorizeBtn.textContent = "Loading Al-Fātiḥah...";
+      try {
+        const data = await fetchSurah(1);
+        memoAyahs = data.arabic.ayahs.map((a, i) => ({
+          text: a.text,
+          translation: data.translation.ayahs[i]?.text || "",
+          audio: data.audio?.ayahs[i]?.audio || null,
+          number: a.numberInSurah
+        }));
+        memoIndex = 0;
+        memoCard.style.display = 'block';
+        renderMemoAyah();
+        // Switch to memorize tab already active
+      } catch (e) {
+        alert("Could not load. Check internet.");
+      }
+      startMemorizeBtn.disabled = false;
+      startMemorizeBtn.textContent = "Start Guided Session (Al-Fātiḥah)";
+    });
+
+    function renderMemoAyah() {
+      if (!memoAyahs.length) return;
+      const a = memoAyahs[memoIndex];
+      memoContent.innerHTML = `
+        <div class="ayah-number">${a.number} / ${memoAyahs.length}</div>
+        <div class="arabic arabic-lg" style="text-align:center;margin:1rem 0">${a.text}</div>
+        <div class="translation" style="text-align:center">${a.translation}</div>
+        <p style="text-align:center;margin-top:1rem;font-size:0.9rem;color:var(--text-muted)">Listen → Repeat → Cover the screen and recite from memory</p>
+      `;
+      memoProgress.style.width = ((memoIndex + 1) / memoAyahs.length * 100) + '%';
+      memoStatus.textContent = `Ayah ${memoIndex + 1} of ${memoAyahs.length}`;
+      memoPrev.disabled = memoIndex === 0;
+      memoNext.disabled = memoIndex === memoAyahs.length - 1;
+    }
+
+    memoPrev.addEventListener('click', () => {
+      if (memoIndex > 0) { memoIndex--; renderMemoAyah(); }
+    });
+    memoNext.addEventListener('click', () => {
+      if (memoIndex < memoAyahs.length - 1) { memoIndex++; renderMemoAyah(); }
+    });
+    memoPlay.addEventListener('click', () => {
+      const a = memoAyahs[memoIndex];
+      if (a && a.audio) {
+        audioPlayer.src = a.audio;
+        audioPlayer.play();
+      }
+    });
+  </script>
+</body>
+</html>
