@@ -37,6 +37,12 @@ h2{font-size:1.05rem;margin:0 0 6px}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
 .stat{background:var(--ac2);border-radius:12px;padding:12px;text-align:center}
 .stat b{display:block;font-size:1.6rem;color:var(--ac)}
+/* Audio player */
+.player{border:1px solid var(--bd);background:var(--ac2);border-radius:14px;padding:14px;margin:12px 0}
+.player h2{margin-bottom:7px}.player-controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0}
+.player-controls button{min-width:46px}.player-status{font-weight:600;overflow-wrap:anywhere}
+.player label{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+.player select{max-width:100%}
 /* Alphabet */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px}
 .grid button{font-family:Amiri,"Noto Naskh Arabic",serif;font-size:1.8rem;padding:10px 0;position:relative}
@@ -121,6 +127,25 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
       <button id="playAll">▶ Play surah</button>
       <label class="mu">Repeat <select id="rep" aria-label="Repeat count"><option>1</option><option selected>3</option><option>5</option><option>10</option></select>×</label>
     </div>
+    <div class="player" role="region" aria-label="Continuous Quran audio player">
+      <h2>Quran Audio Player</h2>
+      <div class="row">
+        <label>Reading <select id="audioMode" aria-label="Reading mode">
+          <option value="surah">Selected surah only</option>
+          <option value="from">Continue from selected surah to Surah 114</option>
+          <option value="full">Full Quran (Surah 1–114)</option>
+        </select></label>
+        <label>Speed <select id="audioSpeed" aria-label="Audio playback speed"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></label>
+      </div>
+      <div class="player-controls">
+        <button id="audioPrev" title="Previous verse" aria-label="Previous verse">⏮</button>
+        <button id="audioToggle" class="pri" aria-label="Play or pause">▶ Play</button>
+        <button id="audioNext" title="Next verse" aria-label="Next verse">⏭</button>
+        <button id="audioStop" title="Stop playback">■ Stop</button>
+      </div>
+      <div id="audioStatus" class="player-status" aria-live="polite">Ready to play</div>
+      <p class="note">Uses Mishary Alafasy verse audio from the Quran API. Phone lock-screen controls are available on supported browsers. Continuous playback while the phone sleeps depends on your device, browser and connection; iOS may suspend between verses or surahs. Start playback while the app is open.</p>
+    </div>
     <div class="row"><span class="mu" id="surahProg"></span></div>
     <div class="bar"><i id="surahBar" style="width:0"></i></div>
     <p class="mu" style="font-size:.8rem;margin:4px 0 0">Colours: <span class="sw" style="background:#9a9a9a"></span>silent <span class="sw" style="background:#c7790a"></span>madd 2 <span class="sw" style="background:#d1261b"></span>madd longer <span class="sw" style="background:#2563eb"></span>qalqalah <span class="sw" style="background:#16a34a"></span>ghunnah/ikhfā’/iqlāb <span class="sw" style="background:#9333ea"></span>idghām</p>
@@ -161,7 +186,7 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
 <section id="t-install" hidden>
   <div class="card">
     <h2>Install the app</h2>
-    <p class="mu">Install it like a normal app: it opens full-screen, works offline for the parts you have already loaded, and keeps your progress.</p>
+    <p class="mu">Install it like a normal app. The Quran audio player supports background playback and lock-screen controls on compatible devices. Phone sleep restrictions may interrupt automatic verse or surah transitions; continuous playback is not guaranteed, especially on iOS. An internet connection is normally required for recitation audio.</p>
     <div class="row"><button id="installBtn" class="pri" hidden>📲 Install now</button><span class="mu" id="installMsg"></span></div>
   </div>
   <div class="card">
@@ -343,7 +368,9 @@ renderLetters();
 /* ---------- QURAN ---------- */
 const sel = $('sel'), au = new Audio();
 let surahs = JSON.parse(localStorage.getItem('qapp.surahs') || 'null');
-let cur = [], curN = 1, hide = false, pl = { on: false, i: 0, left: 0, all: false }, vRec = null;
+let cur = [], curN = 1, hide = false, pl = { on: false, i: 0, left: 0, all: false, mode: 'surah' }, vRec = null;
+let loadSerial = 0;
+au.preload = 'auto';
 const memKey = (n, a) => n + ':' + a;
 const memCount = (n) => Object.keys(S.mem).filter((k) => S.mem[k] && +k.split(':')[0] === n).length;
 
@@ -359,11 +386,13 @@ function initSurahs() {
     fillSurahs(surahs); loadSurah(S.lastSurah || 1);
   }).catch(() => { $('ayat').innerHTML = '<p class="warn">Could not load the surah list. Check your connection.</p>'; });
 }
-sel.onchange = () => loadSurah(+sel.value);
+sel.onchange = () => { stopPlay(); loadSurah(+sel.value); };
 
-function loadSurah(n) {
+function loadSurah(n, continuePlayback = false) {
+  const serial = ++loadSerial;
   n = +n; curN = n; S.lastSurah = n; save(); sel.value = n;
-  pl.on = false; au.pause();
+  if (!continuePlayback) stopPlay();
+  au.pause();
   $('ayat').innerHTML = '<p class="mu">Loading surah ' + n + '…</p>';
   const A = fetch('https://api.alquran.cloud/v1/surah/' + n + '/editions/quran-uthmani,en.transliteration,en.sahih,ar.alafasy').then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
   const T = fetch('https://api.quran.com/api/v4/quran/verses/uthmani_tajweed?chapter_number=' + n).then((r) => r.json()).catch(() => null);
@@ -376,8 +405,14 @@ function loadSurah(n) {
       tj: tj[n + ':' + x.numberInSurah] || null,
       tr: e[1].ayahs[i].text, en: e[2].ayahs[i].text, au: e[3].ayahs[i].audio
     }));
+    if (serial !== loadSerial) return;
     draw(); updateSurahProgress();
-  }).catch(() => { $('ayat').innerHTML = '<p class="warn">Could not load this surah. Check your connection and retry.</p>'; });
+    if (continuePlayback && pl.on) { pl.i = 0; pl.left = +$('rep').value || 1; cue(); }
+  }).catch(() => {
+    if (serial !== loadSerial) return;
+    $('ayat').innerHTML = '<p class="warn">Could not load this surah. Check your connection and retry.</p>';
+    if (continuePlayback) { stopPlay(); updateAudioStatus('Playback stopped: network or Quran data unavailable.'); }
+  });
 }
 
 function draw() {
@@ -417,26 +452,97 @@ $('hideBtn').onclick = () => {
 $('rep').onchange = () => { S.repeat = +$('rep').value; save(); };
 $('rep').value = S.repeat || 3;
 
+function updateAudioStatus(message) {
+  $('audioStatus').textContent = message || ('Surah ' + curN + ' · Ayah ' + ((cur[pl.i] || {}).num || 1) + (au.paused ? ' · Paused' : ' · Playing'));
+  $('audioToggle').textContent = pl.on && !au.paused ? '⏸ Pause' : '▶ Play';
+  $('playAll').textContent = pl.on ? '■ Stop surah' : '▶ Play surah';
+  if ('mediaSession' in navigator) navigator.mediaSession.playbackState = pl.on && !au.paused ? 'playing' : 'paused';
+}
+function setAudioMetadata() {
+  if (!('mediaSession' in navigator)) return;
+  const surah = surahs?.find(s => s.number === curN);
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: (surah?.englishName || 'Surah ' + curN) + ' — Ayah ' + (cur[pl.i]?.num || 1),
+    artist: 'Mishary Rashid Alafasy', album: 'Quran & Arabic Learner',
+    artwork: [{src: new URL('icon-192.png', document.baseURI).href, sizes:'192x192', type:'image/png'},
+              {src: new URL('icon-512.png', document.baseURI).href, sizes:'512x512', type:'image/png'}]
+  });
+}
 function cue() {
   const a = cur[pl.i];
-  document.querySelectorAll('.ayah').forEach((c) => c.classList.toggle('now', +c.dataset.i === pl.i));
-  const c = document.querySelector('.ayah[data-i="' + pl.i + '"]');
-  if (c) c.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  au.src = a.au; au.playbackRate = 1; au.play().catch(() => {});
+  if (!a || !a.au) { stopPlay(); updateAudioStatus('Audio unavailable for this verse.'); return; }
+  document.querySelectorAll('.ayah').forEach(c => c.classList.toggle('now', +c.dataset.i === pl.i));
+  if (document.visibilityState === 'visible') {
+    const c = document.querySelector('.ayah[data-i="' + pl.i + '"]');
+    if (c) c.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  au.src = a.au;
+  au.playbackRate = +$('audioSpeed').value || 1;
+  setAudioMetadata();
+  const playback = au.play();
+  if (playback) playback.catch(() => { stopPlay(); updateAudioStatus('Playback blocked. Unlock the phone and press Play to resume.'); });
+  updateAudioStatus();
+  S.audioPosition = { surah: curN, ayah: a.num }; save();
 }
-function stopPlay() { pl.on = false; au.pause(); document.querySelectorAll('.ayah').forEach((c) => c.classList.remove('now')); $('playAll').textContent = '▶ Play surah'; }
+function stopPlay() {
+  pl.on = false; au.pause();
+  document.querySelectorAll('.ayah').forEach(c => c.classList.remove('now'));
+  updateAudioStatus();
+}
+function beginPlayback(i = 0, mode = $('audioMode').value, all = true) {
+  if (!cur.length) { updateAudioStatus('Select a surah and wait for it to load.'); return; }
+  pl = {on: true, i: Math.min(Math.max(i,0),cur.length-1), left: +$('rep').value || 1, all, mode};
+  cue();
+}
+function nextAudio() {
+  if (!cur.length) return;
+  if (pl.i < cur.length - 1) { pl.i++; pl.left = +$('rep').value || 1; cue(); }
+  else if (pl.all && pl.mode !== 'surah' && curN < 114) {
+    updateAudioStatus('Loading Surah ' + (curN + 1) + '…');
+    loadSurah(curN + 1, true);
+  } else stopPlay();
+}
+function previousAudio() {
+  if (!cur.length) return;
+  if (pl.i > 0) { pl.i--; pl.left = +$('rep').value || 1; cue(); }
+  else if (pl.all && pl.mode !== 'surah' && curN > 1) {
+    // Previous-surah navigation starts at its first verse.
+    loadSurah(curN - 1, true);
+  } else { pl.i = 0; cue(); }
+}
 au.onended = () => {
   if (!pl.on) return;
-  const rep = +$('rep').value || 1;
-  if (pl.left > 1) { pl.left--; cue(); }
-  else if (pl.all && pl.i < cur.length - 1) { pl.i++; pl.left = rep; cue(); }
-  else stopPlay();
+  if (pl.left > 1) { pl.left--; cue(); } else nextAudio();
 };
-$('playAll').onclick = () => {
-  if (pl.on) return stopPlay();
-  pl = { on: true, i: 0, left: +$('rep').value || 1, all: true };
-  $('playAll').textContent = '⏸ Stop'; cue();
+au.onplay = () => updateAudioStatus();
+au.onpause = () => updateAudioStatus();
+au.onerror = () => { if (pl.on) { stopPlay(); updateAudioStatus('Unable to play the audio. Check your internet connection.'); } };
+$('audioSpeed').onchange = () => { au.playbackRate = +$('audioSpeed').value; };
+$('audioToggle').onclick = () => {
+  if (!pl.on) {
+    if ($('audioMode').value === 'full' && curN !== 1) {
+      pl = {on:true,i:0,left:+$('rep').value||1,all:true,mode:'full'};
+      updateAudioStatus('Loading Surah 1…'); loadSurah(1,true);
+    } else beginPlayback(0, $('audioMode').value, true);
+  } else if (!au.paused) au.pause();
+  else au.play().catch(() => updateAudioStatus('Unlock the phone and press Play again.'));
 };
+$('audioStop').onclick = stopPlay;
+$('audioNext').onclick = () => { if (!pl.on) beginPlayback(); else nextAudio(); };
+$('audioPrev').onclick = () => { if (!pl.on) beginPlayback(); else previousAudio(); };
+$('playAll').onclick = () => { if (pl.on) stopPlay(); else beginPlayback(0,'surah',true); };
+if ('mediaSession' in navigator) {
+  const handlers = {
+    play: () => { if (!pl.on) beginPlayback(); else au.play().catch(() => {}); },
+    pause: () => au.pause(),
+    stop: stopPlay,
+    nexttrack: () => { if (pl.on) nextAudio(); },
+    previoustrack: () => { if (pl.on) previousAudio(); }
+  };
+  for (const [name, fn] of Object.entries(handlers)) {
+    try { navigator.mediaSession.setActionHandler(name, fn); } catch (_) {}
+  }
+}
 
 $('ayat').onclick = (e) => {
   const w = e.target.closest('.w');
@@ -449,8 +555,8 @@ $('ayat').onclick = (e) => {
     save(); touch(); card.classList.toggle('mem', e.target.checked); updateSurahProgress(); return;
   }
   if (!b) return;
-  if (b.dataset.a === 'p') { pl = { on: true, i, left: +$('rep').value || 1, all: false }; cue(); }
-  else if (b.dataset.a === 's') { au.src = a.au; au.playbackRate = 0.7; au.play(); }
+  if (b.dataset.a === 'p') { beginPlayback(i,'surah',false); }
+  else if (b.dataset.a === 's') { beginPlayback(i,'surah',false); au.playbackRate = 0.7; }
   else if (b.dataset.a === 't') {
     const tx = card.querySelector('.tx'); tx.textContent = 'Loading tafsir…';
     fetch('https://api.quran.com/api/v4/tafsirs/169/by_ayah/' + a.k).then((r) => r.json())

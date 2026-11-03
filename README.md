@@ -36,3 +36,14 @@ From this directory, run `python -m http.server 8000` and browse to `http://loca
 ## Tajweed display repair (November 2026)
 
 The verse renderer parses the **complete** Quran.com Tajweed markup before dividing the Arabic text into word elements. This prevents class attributes appearing as visible Arabic text. The service worker shell version is `v3`, ensuring existing installs can receive the updated code. After deploying, refresh the published website; for a stubborn cached version, close and reopen the PWA or unregister the old service worker in browser DevTools.
+
+## Continuous Quran audio player (v4)
+
+In the Quran tab, choose one of:
+- **Selected surah only:** plays the current chapter, verse by verse.
+- **Continue from selected surah to Surah 114:** automatically loads following chapters.
+- **Full Quran (Surah 1–114):** starts at Al-Fatihah and attempts to advance through all chapters.
+
+Set **Repeat = 1** to avoid repeating each verse multiple times. Select audio speed and click Play while the application is open. Play/Pause/Next/Previous media controls use the browser Media Session API on compatible platforms. Normal screen-lock playback of an active audio element is generally supported on Android Chrome; automatic transitions between many separate verse files and chapter API fetches may be suspended by iOS Safari, background restrictions, power-saving modes, or network failure. No website can guarantee uninterrupted background playback on all devices. Audio is streamed from third-party Quran sources and should not be assumed available offline.
+
+To deploy an update, replace all repository files with the contents of this folder, commit, then reload the published app. The service-worker cache name has changed to v4.
