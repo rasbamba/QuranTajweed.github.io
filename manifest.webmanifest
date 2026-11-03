@@ -1,13 +1,13 @@
 {
-  "name": "Quran & Arabic Learner",
-  "short_name": "Quran Learner",
-  "description": "Learn the Arabic alphabet, pronunciation, and memorize the Qur'an with audio, transliteration and progress tracking.",
+  "name": "QuranPath — Quran & Tajweed Learner",
+  "short_name": "QuranPath",
+  "description": "Learn Quran recitation, Tajweed, and memorisation, with an installable Quran audio player and offline surah downloads.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#faf8f3",
-  "theme_color": "#0f6b4f",
+  "background_color": "#f8f7f3",
+  "theme_color": "#063b32",
   "icons": [
     {
       "src": "icon-192.png",

@@ -1,8 +1,8 @@
-const SHELL = 'quran-learner-shell-v6';
-const DATA = 'quran-learner-data-v6';
+const SHELL = 'quran-learner-shell-v8';
+const DATA = 'quran-learner-data-v8';
 const AUDIO_CACHE = 'quran-learner-offline-audio-v1';
 const AUDIO_HOST = 'cdn.islamic.network';
-const APP_FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
+const APP_FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './quranpath.css', './quranpath.js'];
 const API_HOSTS = new Set(['api.alquran.cloud', 'api.quran.com']);
 
 self.addEventListener('install', (event) => {

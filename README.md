@@ -70,3 +70,12 @@ The `sw.js` cache version is v5; the audio cache has its own stable name so a fu
 ## Mushaf-inspired reading view (v6)
 
 The Quran tab defaults to a framed, parchment-style Mushaf reading view with Arabic flowing text and ayah number ornaments. Use **Verse study** to access translations, transliterations, audio, microphone comparison and tafsir. Tap an ayah in Mushaf view to open its study card. Previous/Next switches between groups of seven verses. These sections are a display convenience, **not official printed Mushaf pagination**. The Arabic text is supplied by the same third-party API as in previous versions; verify against an authoritative printed Mushaf. Offline text availability depends on previously cached API content.
+
+
+## Opening Bismillah — v8
+
+On the first ayah of each chapter except Al-Fatihah (1) and At-Tawbah (9), the app displays `بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ` as an unnumbered, visually distinct surah opening in the focused reader, Mushaf view, verse-study cards and recitation practice. It appears only at the start of the chapter (not at the beginning of each display section or every ayah). Al-Fatihah already contains Bismillah as verse 1 according to the app's selected numbering; At-Tawbah does not open with Bismillah. If the chapter's first ayah already contains the opening phrase, the app avoids inserting a second copy. Verse IDs, counts, progress and API content are unchanged.
+
+The continuous Quran audio player now offers an enabled-by-default **Recite Bismillah before each surah** option. When playing a complete surah or advancing to the next, the first al-Fatihah verse recording is used as a separate opening before the chapter's first numbered ayah, except for Surahs 1 and 9. Individual ayah playback is unchanged. For an individual surah downloaded for offline playback, the shared opening recording is also cached if this setting is enabled. Audio sequencing still depends on browser/background support and third-party audio responses. Confirm pronunciation and reading against a qualified teacher and printed Mushaf. Cache name is updated to v8 to prompt the new app shell to install without deleting the preserved audio cache.
+
+Update the existing repository `rasbamba/QuranTajweed.github.io` by uploading all files inside this folder to its root on branch `main` and committing. The published GitHub Pages site is `https://rasbamba.github.io/QuranTajweed.github.io/`.
